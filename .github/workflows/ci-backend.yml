@@ -33,7 +33,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Python 3.11
         uses: actions/setup-python@v5
@@ -56,6 +56,7 @@ jobs:
         working-directory: backend
         run: pytest tests/ -v --tb=short
         env:
+          PYTHONPATH: ${{ github.workspace }}/backend:$PYTHONPATH
           DATABASE_URL: postgresql+asyncpg://testuser:testpass@localhost:5432/aura_test
           ENVIRONMENT: test
           API_KEY: test-key-ci
