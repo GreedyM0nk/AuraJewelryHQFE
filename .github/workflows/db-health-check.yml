@@ -29,6 +29,7 @@ jobs:
           echo "✅ API health check passed — HTTP $RESPONSE"
 
       - name: Check NeonDB connectivity
+        if: always()
         continue-on-error: true
         run: |
           pip install asyncpg
@@ -43,6 +44,6 @@ jobs:
           "
 
       - name: Notify on failure
-        if: failure()
+        if: always()
         run: |
           echo "::error::Daily health check failed — check NeonDB and API"
