@@ -70,7 +70,7 @@ VITE_API_URL=http://localhost:8000
 ```
 DATABASE_URL=postgresql+asyncpg://user:pass@host.neon.tech/db?ssl=require
 ENVIRONMENT=development
-ALLOWED_ORIGINS=["http://localhost:5173"]
+ALLOWED_ORIGINS=http://localhost:5173
 API_KEY=your-secret-key-here
 RATE_LIMIT=100/minute
 ```
@@ -130,7 +130,7 @@ npm run build      # production build
 **Backend:**
 ```bash
 cd backend
-pytest tests/ -v   # run test suite
+python -m pytest tests/ -v   # run test suite
 ```
 
 ## Notes
