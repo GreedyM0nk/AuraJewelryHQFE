@@ -8,7 +8,6 @@ jobs:
   deploy-frontend:
     name: Deploy Frontend → Vercel
     runs-on: ubuntu-latest
-    needs: []
 
     steps:
       - name: Checkout
@@ -34,10 +33,37 @@ jobs:
             -H "Content-Type: application/json" \
             --fail-with-body
 
+  seed-database:
+    name: Seed Database
+    runs-on: ubuntu-latest
+    needs: [deploy-backend]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Wait for Render to come up
+        run: sleep 90
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install seed dependencies
+        working-directory: backend
+        run: pip install asyncpg python-dotenv
+
+      - name: Run seed script
+        working-directory: backend
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python -m scripts.seed
+
   notify:
     name: Notify on completion
     runs-on: ubuntu-latest
-    needs: [deploy-frontend, deploy-backend]
+    needs: [deploy-frontend, deploy-backend, seed-database]
     if: always()
 
     steps:
@@ -46,5 +72,6 @@ jobs:
           echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
           echo "- Frontend: ${{ needs.deploy-frontend.result }}" >> $GITHUB_STEP_SUMMARY
           echo "- Backend: ${{ needs.deploy-backend.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Seed DB: ${{ needs.seed-database.result }}" >> $GITHUB_STEP_SUMMARY
           echo "- Commit: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
           echo "- Triggered by: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
