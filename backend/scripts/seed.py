@@ -1,0 +1,124 @@
+"""
+Idempotent seed script for Aura Jewellery HQ.
+
+NOTE: This script uses ON CONFLICT DO NOTHING to safely insert seed data.
+The DataAnalystProject repo also writes to these tables daily via its own 
+GitHub Actions cron job. Do NOT drop/truncate tables here — only insert 
+missing seeds. Both data sources (seed + cron) coexist in the same DB.
+"""
+
+import asyncio
+import os
+import uuid
+from decimal import Decimal
+
+import asyncpg
+from dotenv import load_dotenv
+
+load_dotenv()
+
+CATEGORY_IDS = {
+    'cat-001': uuid.UUID('11111111-1111-1111-1111-111111111001'),
+    'cat-002': uuid.UUID('11111111-1111-1111-1111-111111111002'),
+    'cat-003': uuid.UUID('11111111-1111-1111-1111-111111111003'),
+    'cat-004': uuid.UUID('11111111-1111-1111-1111-111111111004'),
+}
+
+PRODUCT_IDS = {
+    'AJ-001': uuid.UUID('22222222-2222-2222-2222-222222220001'),
+    'AJ-002': uuid.UUID('22222222-2222-2222-2222-222222220002'),
+    'AJ-003': uuid.UUID('22222222-2222-2222-2222-222222220003'),
+    'AJ-004': uuid.UUID('22222222-2222-2222-2222-222222220004'),
+    'AJ-005': uuid.UUID('22222222-2222-2222-2222-222222220005'),
+    'AJ-006': uuid.UUID('22222222-2222-2222-2222-222222220006'),
+    'AJ-007': uuid.UUID('22222222-2222-2222-2222-222222220007'),
+    'AJ-008': uuid.UUID('22222222-2222-2222-2222-222222220008'),
+}
+
+CATEGORIES = [
+    (
+        CATEGORY_IDS['cat-001'],
+        'Charms',
+        'Delicate handcrafted gold charms for every occasion.',
+        'https://images.unsplash.com/photo-1617038220319-276d3cfab638?w=600&q=80',
+    ),
+    (
+        CATEGORY_IDS['cat-002'],
+        'Bracelets',
+        'Elegant gold and silver bracelets crafted in Kolkata.',
+        'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=600&q=80',
+    ),
+    (
+        CATEGORY_IDS['cat-003'],
+        'Necklaces',
+        'Statement necklaces for the discerning collector.',
+        'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=600&q=80',
+    ),
+    (
+        CATEGORY_IDS['cat-004'],
+        'Rings',
+        'Heritage rings in fine gold and gemstones.',
+        'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&q=80',
+    ),
+]
+
+PRODUCTS = [
+    (PRODUCT_IDS['AJ-001'], 'Golden Lotus Charm', 'A delicate 22k gold lotus charm, handcrafted in Kolkata.', Decimal('4500'), CATEGORY_IDS['cat-001'], 'https://images.unsplash.com/photo-1617038220319-276d3cfab638?w=600&q=80', 10, 'AJ-001'),
+    (PRODUCT_IDS['AJ-002'], 'Heritage Bangle', 'Intricate filigree work in sterling silver with gold plating.', Decimal('8200'), CATEGORY_IDS['cat-002'], 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=600&q=80', 3, 'AJ-002'),
+    (PRODUCT_IDS['AJ-003'], 'Pearl Drop Charm', 'Freshwater pearl suspended in a gold teardrop setting.', Decimal('3800'), CATEGORY_IDS['cat-001'], 'https://images.unsplash.com/photo-1598560917505-59a3ad559071?w=600&q=80', 15, 'AJ-003'),
+    (PRODUCT_IDS['AJ-004'], 'Celestial Chain Bracelet', 'Layered gold chains with celestial moon and star accents.', Decimal('6900'), CATEGORY_IDS['cat-002'], 'https://images.unsplash.com/photo-1573408301185-9519f94b4e15?w=600&q=80', 2, 'AJ-004'),
+    (PRODUCT_IDS['AJ-005'], 'Hamsa Hand Charm', 'Traditional Hamsa hand in 18k yellow gold with sapphire eye.', Decimal('5600'), CATEGORY_IDS['cat-001'], 'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=600&q=80', 8, 'AJ-005'),
+    (PRODUCT_IDS['AJ-006'], 'Twisted Rope Bracelet', 'Bold twisted rope design in two-tone gold, adjustable closure.', Decimal('9400'), CATEGORY_IDS['cat-002'], 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&q=80', 6, 'AJ-006'),
+    (PRODUCT_IDS['AJ-007'], 'Floral Mandala Charm', 'Intricate mandala motif in oxidised gold finish.', Decimal('4200'), CATEGORY_IDS['cat-001'], 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=600&q=80', 12, 'AJ-007'),
+    (PRODUCT_IDS['AJ-008'], 'Diamond Cut Tennis Bracelet', 'Classic tennis bracelet with diamond-cut links in 22k gold.', Decimal('15800'), CATEGORY_IDS['cat-002'], 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80', 4, 'AJ-008'),
+]
+
+
+def normalize_dsn(dsn: str) -> str:
+    # asyncpg expects postgres:// or postgresql:// DSN
+    return dsn.replace('postgresql+asyncpg://', 'postgresql://', 1)
+
+
+async def seed() -> None:
+    dsn = os.getenv('DATABASE_URL')
+    if not dsn:
+        raise RuntimeError('DATABASE_URL is required')
+
+    conn = await asyncpg.connect(normalize_dsn(dsn))
+    try:
+        categories_count = 0
+        products_count = 0
+
+        for row in CATEGORIES:
+            result = await conn.execute(
+                '''
+                INSERT INTO categories (id, name, description, image_url)
+                VALUES ($1, $2, $3, $4)
+                ON CONFLICT (id) DO NOTHING
+                ''',
+                *row,
+            )
+            if result.endswith('1'):
+                categories_count += 1
+
+        for row in PRODUCTS:
+            result = await conn.execute(
+                '''
+                INSERT INTO products (
+                    id, name, description, price, category_id, image_url, stock_quantity, sku
+                )
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                ON CONFLICT (id) DO NOTHING
+                ''',
+                *row,
+            )
+            if result.endswith('1'):
+                products_count += 1
+
+        print(f'✅ Seeded {categories_count} categories, {products_count} products')
+    finally:
+        await conn.close()
+
+
+if __name__ == '__main__':
+    asyncio.run(seed())

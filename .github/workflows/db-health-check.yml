@@ -1,0 +1,43 @@
+name: DB Health Check
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    name: Verify NeonDB + API health
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Check production API health
+        run: |
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
+            "${{ secrets.PRODUCTION_API_URL }}/health")
+          if [ "$RESPONSE" -ne 200 ]; then
+            echo "❌ API health check failed — HTTP $RESPONSE"
+            exit 1
+          fi
+          echo "✅ API health check passed — HTTP $RESPONSE"
+
+      - name: Check NeonDB connectivity
+        run: |
+          pip install asyncpg
+          python3 -c "
+          import asyncio, asyncpg
+          async def check():
+              conn = await asyncpg.connect('${{ secrets.DATABASE_URL }}')
+              result = await conn.fetchval('SELECT COUNT(*) FROM products')
+              print(f'✅ NeonDB connected. Products in DB: {result}')
+              await conn.close()
+          asyncio.run(check())
+          "
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "::error::Daily health check failed — check NeonDB and API"
