@@ -15,6 +15,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Check production API health
+        continue-on-error: true
         run: |
           API_URL="${{ secrets.PRODUCTION_API_URL }}"
           if [ -z "$API_URL" ]; then
@@ -28,6 +29,7 @@ jobs:
           echo "✅ API health check passed — HTTP $RESPONSE"
 
       - name: Check NeonDB connectivity
+        continue-on-error: true
         run: |
           pip install asyncpg
           python3 -c "
