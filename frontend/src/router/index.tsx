@@ -8,6 +8,8 @@ import { Spinner } from '@/components/ui/Spinner'
 
 const HomePage = lazy(() => import('@/pages/HomePage'))
 const ProductsPage = lazy(() => import('@/pages/ProductsPage'))
+const CollectionsPage = lazy(() => import('@/pages/CollectionsPage'))
+const AboutPage = lazy(() => import('@/pages/AboutPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 const AnimatedRoutes: React.FC = () => {
@@ -17,6 +19,8 @@ const AnimatedRoutes: React.FC = () => {
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<HomePage />} />
         <Route path="/shop" element={<ProductsPage />} />
+        <Route path="/collections" element={<CollectionsPage />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </AnimatePresence>
