@@ -12,12 +12,15 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Check production API health
         run: |
-          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
-            "${{ secrets.PRODUCTION_API_URL }}/health")
+          API_URL="${{ secrets.PRODUCTION_API_URL }}"
+          if [ -z "$API_URL" ]; then
+            API_URL="https://aura-jewellery-api.onrender.com"
+          fi
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "${API_URL}/health")
           if [ "$RESPONSE" -ne 200 ]; then
             echo "❌ API health check failed — HTTP $RESPONSE"
             exit 1
