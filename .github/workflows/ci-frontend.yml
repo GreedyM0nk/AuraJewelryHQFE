@@ -8,8 +8,6 @@ on:
       - '.github/workflows/ci-frontend.yml'
   pull_request:
     branches: [main, develop]
-    paths:
-      - 'frontend/**'
 
 jobs:
   build-and-lint:
