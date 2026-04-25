@@ -27,3 +27,15 @@ backend/alembic/versions/__pycache__/
 
 # Docker
 docker-compose.override.yml
+
+# Browser Testing & Screenshots
+*.png
+*.jpg
+*.jpeg
+*.gif
+.playwright-mcp/
+page-*.{png,jpg,jpeg}
+screenshot-*.{png,jpg,jpeg}
+trace.json
+trace.json.gz
+*.har
