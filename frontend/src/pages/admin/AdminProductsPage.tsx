@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { Button } from '@/components/ui/Button'
 import { Spinner } from '@/components/ui/Spinner'
@@ -45,7 +45,7 @@ const AdminProductsPage: React.FC = () => {
     return new Map(categories.map((category) => [category.id, category.name]))
   }, [categories])
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     setLoading(true)
     setError('')
     try {
@@ -61,11 +61,11 @@ const AdminProductsPage: React.FC = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [handleUnauthorized])
 
   useEffect(() => {
     void loadData()
-  }, [])
+  }, [loadData])
 
   const openAdd = () => {
     setEditing(null)

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { Button } from '@/components/ui/Button'
 import { Spinner } from '@/components/ui/Spinner'
@@ -19,7 +19,7 @@ const AdminOrdersPage: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
-  const fetchOrders = async (status?: string) => {
+  const fetchOrders = useCallback(async (status?: string) => {
     setLoading(true)
     setError('')
     try {
@@ -34,11 +34,11 @@ const AdminOrdersPage: React.FC = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [apiKey, handleUnauthorized])
 
   useEffect(() => {
     void fetchOrders(statusFilter || undefined)
-  }, [statusFilter, apiKey])
+  }, [statusFilter, fetchOrders])
 
   const onUpdateStatus = async (orderId: string, nextStatus: string) => {
     setError('')

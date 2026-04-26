@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { Button } from '@/components/ui/Button'
 import { Spinner } from '@/components/ui/Spinner'
@@ -15,7 +15,7 @@ const AdminCategoriesPage: React.FC = () => {
   const [description, setDescription] = useState('')
   const [imageUrl, setImageUrl] = useState('')
 
-  const loadCategories = async () => {
+  const loadCategories = useCallback(async () => {
     setLoading(true)
     setError('')
     try {
@@ -30,11 +30,11 @@ const AdminCategoriesPage: React.FC = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [handleUnauthorized])
 
   useEffect(() => {
     void loadCategories()
-  }, [])
+  }, [loadCategories])
 
   const onCreate = async (event: React.FormEvent) => {
     event.preventDefault()

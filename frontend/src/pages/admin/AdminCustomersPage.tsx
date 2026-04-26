@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { Button } from '@/components/ui/Button'
 import { Spinner } from '@/components/ui/Spinner'
@@ -13,7 +13,7 @@ const AdminCustomersPage: React.FC = () => {
   const [error, setError] = useState('')
   const [search, setSearch] = useState('')
 
-  const fetchCustomers = async (searchTerm?: string) => {
+  const fetchCustomers = useCallback(async (searchTerm?: string) => {
     setLoading(true)
     setError('')
     try {
@@ -28,7 +28,7 @@ const AdminCustomersPage: React.FC = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [apiKey, handleUnauthorized])
 
   useEffect(() => {
     const timeout = window.setTimeout(() => {
@@ -36,7 +36,7 @@ const AdminCustomersPage: React.FC = () => {
     }, 350)
 
     return () => window.clearTimeout(timeout)
-  }, [search, apiKey])
+  }, [search, fetchCustomers])
 
   const onDelete = async (customer: Customer) => {
     const confirmed = window.confirm(`Delete ${customer.name}?`)
