@@ -37,7 +37,7 @@ export const Footer: React.FC = () => {
             </p>
             <div className="flex items-center gap-4">
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
@@ -46,7 +46,7 @@ export const Footer: React.FC = () => {
                 <Instagram size={18} />
               </a>
               <a
-                href="https://pinterest.com"
+                href="https://www.pinterest.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Pinterest"
@@ -55,7 +55,7 @@ export const Footer: React.FC = () => {
                 <PinterestIcon />
               </a>
               <a
-                href="https://wa.me/"
+                href="https://wa.me/919000000000?text=Hi!%20I%27m%20interested%20in%20Aura%20Jewellery"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
