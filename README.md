@@ -221,7 +221,10 @@ src/
 │   │   ├── Button.tsx       # primary / ghost / outline variants
 │   │   ├── Badge.tsx        # gold / danger / neutral
 │   │   ├── GoldDivider.tsx  # decorative rule with diamond accent
-│   │   └── Spinner.tsx      # Loading indicator
+│   │   ├── Spinner.tsx      # Loading indicator
+│   │   └── ProductCardSkeleton.tsx # Reusable product loading skeleton
+│   ├── search/
+│   │   └── SearchModal.tsx  # Debounced product search modal
 │   ├── home/
 │   │   ├── HeroSection.tsx  # Full-viewport hero with animated text
 │   │   ├── CategoryStrip.tsx# Category cards with skeleton loading
@@ -245,6 +248,8 @@ src/
 │   ├── ProductDetailPage.tsx# /products/:productId — image, SKU, stock, Add to Cart
 │   ├── CheckoutPage.tsx     # /checkout — customer registration + order placement (2-step)
 │   ├── OrderConfirmationPage.tsx # /order-confirmation/:orderId — success screen
+│   ├── PrivacyPolicyPage.tsx # /privacy-policy
+│   ├── TermsPage.tsx        # /terms
 │   ├── NotFoundPage.tsx     # Branded 404 with gold animation
 │   └── admin/
 │       ├── AdminLayout.tsx       # API-key guard + sidebar nav
@@ -272,12 +277,24 @@ src/
 | `/products/:productId` | Product detail — image, SKU, stock, Add to Cart | — |
 | `/checkout` | Two-step checkout (customer info → order review) | — |
 | `/order-confirmation/:orderId` | Order success screen | — |
+| `/privacy-policy` | Privacy policy page | — |
+| `/terms` | Terms of service page | — |
 | `/admin` | Redirects to `/admin/products` | API key |
 | `/admin/products` | Create / edit / delete products | API key |
 | `/admin/categories` | Create / delete categories | API key |
 | `/admin/customers` | Search + delete customers | API key |
 | `/admin/orders` | List, update status, delete orders | API key |
 | `/*` | 404 Not Found | — |
+
+---
+
+## Backend Additions
+
+- `POST /api/v1/newsletter` endpoint added for newsletter subscriptions
+- New backend files:
+	- `backend/app/routers/newsletter.py`
+	- `backend/app/schemas/newsletter.py`
+- Seed script now includes products for `Necklaces` and `Rings` categories (`AJ-009` to `AJ-012`)
 
 ---
 

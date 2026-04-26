@@ -12,7 +12,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
 from app.database import engine, get_db
-from app.routers import categories_router, customers_router, orders_router, products_router
+from app.routers import categories_router, customers_router, newsletter_router, orders_router, products_router
 
 
 @asynccontextmanager
@@ -52,6 +52,7 @@ app.include_router(categories_router, prefix='/api/v1')
 app.include_router(products_router, prefix='/api/v1')
 app.include_router(customers_router, prefix='/api/v1')
 app.include_router(orders_router, prefix='/api/v1')
+app.include_router(newsletter_router, prefix='/api/v1')
 
 
 @app.get('/health')

@@ -33,6 +33,10 @@ PRODUCT_IDS = {
     'AJ-006': uuid.UUID('22222222-2222-2222-2222-222222220006'),
     'AJ-007': uuid.UUID('22222222-2222-2222-2222-222222220007'),
     'AJ-008': uuid.UUID('22222222-2222-2222-2222-222222220008'),
+    'AJ-009': uuid.UUID('22222222-2222-2222-2222-222222220009'),
+    'AJ-010': uuid.UUID('22222222-2222-2222-2222-222222220010'),
+    'AJ-011': uuid.UUID('22222222-2222-2222-2222-222222220011'),
+    'AJ-012': uuid.UUID('22222222-2222-2222-2222-222222220012'),
 }
 
 CATEGORIES = [
@@ -71,6 +75,10 @@ PRODUCTS = [
     (PRODUCT_IDS['AJ-006'], 'Twisted Rope Bracelet', 'Bold twisted rope design in two-tone gold, adjustable closure.', Decimal('9400'), CATEGORY_IDS['cat-002'], 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&q=80', 6, 'AJ-006'),
     (PRODUCT_IDS['AJ-007'], 'Floral Mandala Charm', 'Intricate mandala motif in oxidised gold finish.', Decimal('4200'), CATEGORY_IDS['cat-001'], 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=600&q=80', 12, 'AJ-007'),
     (PRODUCT_IDS['AJ-008'], 'Diamond Cut Tennis Bracelet', 'Classic tennis bracelet with diamond-cut links in 22k gold.', Decimal('15800'), CATEGORY_IDS['cat-002'], 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80', 4, 'AJ-008'),
+    (PRODUCT_IDS['AJ-009'], 'Temple Coin Necklace', '22k gold coin pendant on a fine rope chain, inspired by temple motifs.', Decimal('12500'), CATEGORY_IDS['cat-003'], 'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=600&q=80', 5, 'AJ-009'),
+    (PRODUCT_IDS['AJ-010'], 'Layered Kundan Necklace', 'Three-strand kundan set necklace in antique gold finish.', Decimal('18900'), CATEGORY_IDS['cat-003'], 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=600&q=80', 3, 'AJ-010'),
+    (PRODUCT_IDS['AJ-011'], 'Floral Signet Ring', 'Handcrafted floral signet in 18k yellow gold, adjustable band.', Decimal('7200'), CATEGORY_IDS['cat-004'], 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&q=80', 8, 'AJ-011'),
+    (PRODUCT_IDS['AJ-012'], 'Meenakari Statement Ring', 'Bold meenakari enamel ring with peacock motif in 22k gold.', Decimal('9800'), CATEGORY_IDS['cat-004'], 'https://images.unsplash.com/photo-1573408301185-9519f94b4e15?w=600&q=80', 6, 'AJ-012'),
 ]
 
 

@@ -1,7 +1,13 @@
 import axiosClient from './axiosClient'
 import type { Product, ProductCreate, ProductUpdate } from '@/types'
 
-export const getProducts = (params?: { category_id?: string }) =>
+export const getProducts = (params?: {
+  category_id?: string
+  search?: string
+  limit?: number
+  offset?: number
+  sort?: string
+}) =>
   axiosClient.get<Product[]>('/products', { params }).then((res) => res.data)
 
 export const getProductById = (id: string) =>
