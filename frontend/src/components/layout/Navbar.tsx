@@ -3,7 +3,7 @@ import { Link, NavLink } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ShoppingBag, Search, Menu, X } from 'lucide-react'
 import { useCart } from '@/hooks/useCart'
-import { Button } from '@/components/ui/Button'
+import { SearchModal } from '@/components/search/SearchModal'
 import logo from '@/assets/logo.png'
 
 const NAV_LINKS = [
@@ -16,6 +16,7 @@ const NAV_LINKS = [
 export const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
   const { totalItems, toggleCart } = useCart()
 
   useEffect(() => {
@@ -68,6 +69,7 @@ export const Navbar: React.FC = () => {
               <button
                 aria-label="Search"
                 className="text-brand-cream/70 hover:text-brand-gold transition-colors duration-200 flex min-h-[48px] min-w-[48px] items-center justify-center"
+                onClick={() => setIsSearchOpen(true)}
               >
                 <Search size={20} />
               </button>
@@ -85,9 +87,14 @@ export const Navbar: React.FC = () => {
                 )}
               </button>
 
-              <Button variant="outline" size="sm" className="hidden lg:inline-flex">
+              <a
+                href="https://wa.me/919000000000?text=Hi!%20I%27d%20like%20to%20book%20a%20jewellery%20consultation."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden lg:inline-flex items-center justify-center gap-2 font-accent tracking-widest uppercase transition-all duration-300 bg-transparent text-brand-gold border border-brand-gold hover:bg-brand-gold hover:text-brand-black px-4 py-1.5 text-xs"
+              >
                 Book Consultation
-              </Button>
+              </a>
 
               <button
                 className="lg:hidden text-brand-cream/70 hover:text-brand-gold transition-colors min-h-[48px] min-w-[48px] flex items-center justify-center"
@@ -130,12 +137,20 @@ export const Navbar: React.FC = () => {
                 </NavLink>
               ))}
             </nav>
-            <Button variant="outline" onClick={() => setMobileOpen(false)}>
+            <a
+              href="https://wa.me/919000000000?text=Hi!%20I%27d%20like%20to%20book%20a%20jewellery%20consultation."
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileOpen(false)}
+              className="inline-flex items-center justify-center gap-2 font-accent tracking-widest uppercase transition-all duration-300 bg-transparent text-brand-gold border border-brand-gold hover:bg-brand-gold hover:text-brand-black px-6 py-2 text-sm"
+            >
               Book Consultation
-            </Button>
+            </a>
           </motion.div>
         )}
       </AnimatePresence>
+
+      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </>
   )
 }

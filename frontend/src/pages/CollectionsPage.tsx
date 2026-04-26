@@ -4,8 +4,8 @@ import { motion } from 'framer-motion'
 import { PageWrapper } from '@/components/layout/PageWrapper'
 import { ProductCard } from '@/components/home/ProductCard'
 import { GoldDivider } from '@/components/ui/GoldDivider'
-import { Spinner } from '@/components/ui/Spinner'
 import { Button } from '@/components/ui/Button'
+import { ProductCardSkeleton } from '@/components/ui/ProductCardSkeleton'
 import { useProducts } from '@/hooks/useProducts'
 import { useCategories } from '@/hooks/useCategories'
 import { RefreshCw } from 'lucide-react'
@@ -58,6 +58,8 @@ const CollectionsPage: React.FC = () => {
                     <img
                       src={cat.image_url ?? 'https://images.unsplash.com/photo-1617038220319-276d3cfab638?w=600&q=80'}
                       alt={cat.name}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-300"
                     />
                     <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
@@ -69,6 +71,19 @@ const CollectionsPage: React.FC = () => {
                       </span>
                     </div>
                   </motion.button>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {!activeCategory && catsLoading && (
+            <section className="mb-16">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-brand-gold/10">
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <div key={index} className="animate-pulse bg-brand-black p-3">
+                    <div className="aspect-square bg-brand-charcoal/60" />
+                    <div className="h-4 bg-brand-charcoal/60 w-2/3 mt-3" />
+                  </div>
                 ))}
               </div>
             </section>
@@ -93,8 +108,10 @@ const CollectionsPage: React.FC = () => {
           </div>
 
           {isLoading && (
-            <div className="flex justify-center py-20">
-              <Spinner size="lg" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px bg-brand-gold/10">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <ProductCardSkeleton key={i} />
+              ))}
             </div>
           )}
 

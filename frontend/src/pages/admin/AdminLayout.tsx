@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import { Navigate, NavLink, Outlet } from 'react-router-dom'
 import { Button } from '@/components/ui/Button'
+import axiosClient from '@/api/axiosClient'
 
 type AdminNavItem = {
   label: string
@@ -22,6 +23,8 @@ export type AdminOutletContext = {
 const AdminLayout: React.FC = () => {
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('adminApiKey')?.trim() ?? '')
   const [inputKey, setInputKey] = useState('')
+  const [unlocking, setUnlocking] = useState(false)
+  const [unlockError, setUnlockError] = useState('')
 
   const hasApiKey = apiKey.length > 0
 
@@ -48,14 +51,24 @@ const AdminLayout: React.FC = () => {
           </p>
           <form
             className="space-y-4"
-            onSubmit={(event) => {
+            onSubmit={async (event) => {
               event.preventDefault()
               const value = inputKey.trim()
               if (!value) {
                 return
               }
-              localStorage.setItem('adminApiKey', value)
-              setApiKey(value)
+
+              setUnlocking(true)
+              setUnlockError('')
+              try {
+                await axiosClient.get('/customers', { headers: { 'X-Api-Key': value } })
+                localStorage.setItem('adminApiKey', value)
+                setApiKey(value)
+              } catch {
+                setUnlockError('Invalid API key. Please check your Render environment variables.')
+              } finally {
+                setUnlocking(false)
+              }
             }}
           >
             <input
@@ -65,8 +78,9 @@ const AdminLayout: React.FC = () => {
               className="w-full bg-brand-black border border-brand-gold/40 px-3 py-2 text-brand-cream outline-none focus:border-brand-gold"
               placeholder="Enter X-Api-Key"
             />
-            <Button type="submit" className="w-full">
-              Unlock
+            {unlockError && <p className="text-red-400 text-sm">{unlockError}</p>}
+            <Button type="submit" className="w-full" disabled={unlocking}>
+              {unlocking ? 'Validating...' : 'Unlock'}
             </Button>
           </form>
         </section>

@@ -4,8 +4,9 @@ import { PageWrapper } from '@/components/layout/PageWrapper'
 import { Button } from '@/components/ui/Button'
 import { Spinner } from '@/components/ui/Spinner'
 import { GoldDivider } from '@/components/ui/GoldDivider'
-import { getProduct } from '@/api/products'
+import { getProduct, getProducts } from '@/api/products'
 import { useCart } from '@/hooks/useCart'
+import { ProductCard } from '@/components/home/ProductCard'
 import type { Product } from '@/types'
 
 const formatPrice = (value: number) =>
@@ -15,8 +16,10 @@ const ProductDetailPage: React.FC = () => {
   const { productId } = useParams<{ productId: string }>()
   const { addItem } = useCart()
   const [product, setProduct] = useState<Product | null>(null)
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [quantity, setQuantity] = useState(1)
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -31,9 +34,18 @@ const ProductDetailPage: React.FC = () => {
       try {
         const data = await getProduct(productId)
         setProduct(data)
+        setQuantity(1)
+
+        if (data.category_id) {
+          const related = await getProducts({ category_id: data.category_id, limit: 4 })
+          setRelatedProducts(related.filter((item) => item.id !== data.id).slice(0, 4))
+        } else {
+          setRelatedProducts([])
+        }
       } catch (unknownError) {
         const err = unknownError as { message?: string }
         setError(err.message ?? 'Could not load product')
+        setRelatedProducts([])
       } finally {
         setLoading(false)
       }
@@ -52,6 +64,13 @@ const ProductDetailPage: React.FC = () => {
             <Link to="/shop" className="hover:text-brand-gold">Shop</Link>
             {product && (
               <>
+                <span className="mx-2">/</span>
+                <Link
+                  to={product.category_id ? `/shop?category=${product.category_id}` : '/shop'}
+                  className="hover:text-brand-gold"
+                >
+                  {product.category?.name ?? 'Collection'}
+                </Link>
                 <span className="mx-2">/</span>
                 <span className="text-brand-gold">{product.name}</span>
               </>
@@ -73,6 +92,8 @@ const ProductDetailPage: React.FC = () => {
                   <img
                     src={product.image_url}
                     alt={product.name}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -93,6 +114,12 @@ const ProductDetailPage: React.FC = () => {
                   <p>Stock: {product.stock_quantity}</p>
                 </div>
 
+                {product.stock_quantity === 0 && (
+                  <span className="inline-flex mt-3 bg-red-500/20 text-red-300 border border-red-400/40 px-3 py-1 text-xs tracking-widest uppercase">
+                    Out of Stock
+                  </span>
+                )}
+
                 <p className="font-accent text-brand-gold text-2xl mt-5">{formatPrice(product.price)}</p>
 
                 {product.description && (
@@ -100,8 +127,29 @@ const ProductDetailPage: React.FC = () => {
                 )}
 
                 <div className="mt-6">
+                  <div className="inline-flex items-center border border-brand-gold/30 mb-4">
+                    <button
+                      type="button"
+                      className="px-3 py-2 text-brand-gold disabled:text-brand-cream/40"
+                      onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
+                      disabled={quantity <= 1 || product.stock_quantity === 0}
+                    >
+                      -
+                    </button>
+                    <span className="px-4 py-2 min-w-12 text-center">{quantity}</span>
+                    <button
+                      type="button"
+                      className="px-3 py-2 text-brand-gold disabled:text-brand-cream/40"
+                      onClick={() =>
+                        setQuantity((prev) => Math.min(Math.max(product.stock_quantity, 1), prev + 1))
+                      }
+                      disabled={quantity >= product.stock_quantity || product.stock_quantity === 0}
+                    >
+                      +
+                    </button>
+                  </div>
                   <Button
-                    onClick={() => addItem(product)}
+                    onClick={() => addItem(product, quantity)}
                     disabled={product.stock_quantity === 0}
                   >
                     {product.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart'}
@@ -110,6 +158,21 @@ const ProductDetailPage: React.FC = () => {
               </div>
             </div>
           ) : null}
+
+          {!loading && !error && relatedProducts.length > 0 && (
+            <section className="mt-14">
+              <h2 className="font-accent text-brand-gold tracking-widest uppercase text-sm mb-4">
+                You May Also Like
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-brand-gold/10">
+                {relatedProducts.map((related) => (
+                  <div key={related.id} className="bg-brand-black">
+                    <ProductCard product={related} />
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
         </section>
       </main>
     </PageWrapper>

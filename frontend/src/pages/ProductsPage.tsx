@@ -4,8 +4,8 @@ import { motion } from 'framer-motion'
 import { PageWrapper } from '@/components/layout/PageWrapper'
 import { ProductCard } from '@/components/home/ProductCard'
 import { GoldDivider } from '@/components/ui/GoldDivider'
-import { Spinner } from '@/components/ui/Spinner'
 import { Button } from '@/components/ui/Button'
+import { ProductCardSkeleton } from '@/components/ui/ProductCardSkeleton'
 import { useProducts } from '@/hooks/useProducts'
 import { useCategories } from '@/hooks/useCategories'
 import { RefreshCw } from 'lucide-react'
@@ -14,10 +14,11 @@ import { SEO } from '@/components/SEO'
 const ProductsPage: React.FC = () => {
   const [searchParams] = useSearchParams()
   const initialCategory = searchParams.get('category') ?? undefined
+  const search = searchParams.get('search') ?? undefined
   const [activeCategory, setActiveCategory] = useState<string | undefined>(initialCategory)
 
   const { data: categories } = useCategories()
-  const { data: products, isLoading, isError, refetch } = useProducts(activeCategory)
+  const { data: products, isLoading, isError, refetch } = useProducts(activeCategory, search)
 
   const filterTabs = [
     { id: undefined, label: 'All Pieces' },
@@ -64,8 +65,10 @@ const ProductsPage: React.FC = () => {
 
           {/* Loading */}
           {isLoading && (
-            <div className="flex justify-center py-20">
-              <Spinner size="lg" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px bg-brand-gold/10">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <ProductCardSkeleton key={i} />
+              ))}
             </div>
           )}
 

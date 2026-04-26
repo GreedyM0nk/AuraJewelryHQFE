@@ -17,6 +17,7 @@ const CheckoutPage: React.FC = () => {
   const [step, setStep] = useState<1 | 2>(1)
   const [customerId, setCustomerId] = useState('')
   const [inlineError, setInlineError] = useState('')
+  const [emailError, setEmailError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [customerForm, setCustomerForm] = useState<CustomerCreate>({
     name: '',
@@ -46,6 +47,7 @@ const CheckoutPage: React.FC = () => {
 
     setSubmitting(true)
     setInlineError('')
+    setEmailError('')
 
     try {
       const created = await registerCustomer({
@@ -61,17 +63,29 @@ const CheckoutPage: React.FC = () => {
       const err = unknownError as {
         status?: number
         message?: string
-        data?: { detail?: { message?: string; customer_id?: string } }
+        data?: { detail?: { message?: string; customer_id?: string } | Array<{ msg?: string }> }
       }
+      const detail = err.data?.detail
 
       if (err.status === 409) {
-        const existingId = err.data?.detail?.customer_id
+        const existingId = !Array.isArray(detail) ? detail?.customer_id : undefined
         if (existingId) {
           setCustomerId(existingId)
           setStep(2)
           return
         }
         setInlineError('This email is already registered. Please use a different email.')
+        return
+      }
+
+      if (Array.isArray(detail)) {
+        const validationMessage = detail[0]?.msg ?? 'Validation error'
+        setEmailError(validationMessage.replace('value is not a valid email address: ', ''))
+        return
+      }
+
+      if (typeof detail === 'string') {
+        setInlineError(detail)
         return
       }
 
@@ -104,6 +118,10 @@ const CheckoutPage: React.FC = () => {
       clearCart()
       navigate(`/order-confirmation/${order.id}`, {
         state: {
+          orderId: order.id,
+          totalAmount: order.total_amount,
+          items: order.items,
+          customerName: customerForm.name,
           order,
           cartSummary,
         },
@@ -123,17 +141,12 @@ const CheckoutPage: React.FC = () => {
   if (items.length === 0) {
     return (
       <PageWrapper>
-        <main className="pt-28 pb-16 min-h-screen px-4">
-          <section className="max-w-xl mx-auto border border-brand-gold/20 bg-brand-black/50 p-6 text-center">
-            <h1 className="font-accent text-brand-gold tracking-widest uppercase text-lg mb-2">
-              Checkout
-            </h1>
-            <p className="text-brand-cream/70 mb-4">Your cart is empty.</p>
-            <Button as={Link} to="/shop">
-              Continue Shopping
-            </Button>
-          </section>
-        </main>
+        <div className="text-center py-24">
+          <p className="font-body text-brand-cream/60 mb-6">Your cart is empty.</p>
+          <Link to="/shop" className="font-accent text-brand-gold tracking-widest text-sm hover:underline">
+            BROWSE COLLECTION
+          </Link>
+        </div>
       </PageWrapper>
     )
   }
@@ -172,6 +185,7 @@ const CheckoutPage: React.FC = () => {
                     placeholder="Email*"
                     type="email"
                   />
+                  {emailError && <p className="text-red-400 text-sm font-body mt-1">{emailError}</p>}
                   <input
                     value={customerForm.phone ?? ''}
                     onChange={(event) =>
