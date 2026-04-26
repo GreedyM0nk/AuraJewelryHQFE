@@ -17,6 +17,12 @@ backend/.venv/
 # Alembic
 backend/alembic/versions/__pycache__/
 
+# Pytest & coverage
+backend/.pytest_cache/
+backend/htmlcov/
+backend/.coverage
+backend/coverage.xml
+
 # General
 .DS_Store
 *.log

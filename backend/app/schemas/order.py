@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime
 from decimal import Decimal
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -23,6 +24,7 @@ class OrderItemOut(BaseModel):
 
 class OrderCreate(BaseModel):
     customer_id: uuid.UUID
+    total_amount: Decimal | None = None
     items: list[OrderItemCreate] = Field(min_length=1)
     sales_channel: str | None = None
 
@@ -37,3 +39,7 @@ class OrderOut(BaseModel):
     items: list[OrderItemOut]
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class OrderStatusUpdate(BaseModel):
+    status: Literal['pending', 'confirmed', 'shipped', 'delivered', 'cancelled']
