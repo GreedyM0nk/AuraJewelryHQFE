@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ShoppingBag } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { useCart } from '@/hooks/useCart'
 import { CartItem } from './CartItem'
 import { GoldDivider } from '@/components/ui/GoldDivider'
@@ -112,12 +113,13 @@ export const CartDrawer: React.FC = () => {
                 <p className="font-body text-brand-cream/40 text-xs">
                   Shipping &amp; taxes calculated at checkout
                 </p>
-                <button
-                  className="w-full bg-brand-gold text-brand-black font-accent tracking-widest text-xs uppercase py-3 hover:bg-brand-gold-light transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled
+                <Link
+                  to="/checkout"
+                  onClick={toggleCart}
+                  className="block w-full bg-brand-gold text-brand-black text-center font-accent tracking-widest text-xs uppercase py-3 hover:bg-brand-gold-light transition-colors duration-200"
                 >
                   Proceed to Checkout
-                </button>
+                </Link>
                 <button
                   className="w-full text-center font-body text-brand-cream/30 text-xs hover:text-red-400 transition-colors py-1"
                   onClick={clearCart}

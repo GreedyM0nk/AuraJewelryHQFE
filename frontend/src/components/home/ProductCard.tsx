@@ -1,5 +1,6 @@
 import React from 'react'
 import { ShoppingBag, Heart } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { Badge } from '@/components/ui/Badge'
 import { useCart } from '@/hooks/useCart'
 import type { Product } from '@/types'
@@ -24,18 +25,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {/* Gold top border on hover */}
         <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-brand-gold to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center z-10" />
 
-        {product.image_url ? (
-          <img
-            src={product.image_url}
-            alt={product.name}
-            loading="lazy"
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <span className="font-accent text-brand-gold/20 text-4xl">AJ</span>
-          </div>
-        )}
+        <Link to={`/products/${product.id}`} aria-label={`View ${product.name}`}>
+          {product.image_url ? (
+            <img
+              src={product.image_url}
+              alt={product.name}
+              loading="lazy"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <span className="font-accent text-brand-gold/20 text-4xl">AJ</span>
+            </div>
+          )}
+        </Link>
 
         {product.isNew && (
           <span className="absolute top-3 left-3 z-10 bg-brand-gold text-brand-black font-accent text-[10px] tracking-widest px-2 py-1 uppercase">
@@ -73,9 +76,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
       {/* Info */}
       <div className="p-4 flex flex-col gap-1 flex-1">
-        <p className="font-accent text-brand-cream text-xs tracking-widest uppercase truncate">
+        <Link
+          to={`/products/${product.id}`}
+          className="font-accent text-brand-cream text-xs tracking-widest uppercase truncate hover:text-brand-gold"
+        >
           {product.name}
-        </p>
+        </Link>
         {product.description && (
           <p className="font-body text-brand-cream/50 text-xs line-clamp-2 mt-0.5">
             {product.description}

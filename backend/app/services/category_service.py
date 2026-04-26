@@ -32,3 +32,11 @@ async def create_category(payload: CategoryCreate, db: AsyncSession) -> Category
     await db.flush()
     await db.refresh(category)
     return category
+
+
+async def delete_category(category_id: uuid.UUID, db: AsyncSession) -> None:
+    category = await db.scalar(select(Category).where(Category.id == category_id))
+    if category is None:
+        raise HTTPException(status_code=404, detail='Category not found')
+    await db.delete(category)
+    await db.flush()

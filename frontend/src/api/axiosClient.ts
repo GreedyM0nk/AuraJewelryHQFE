@@ -18,10 +18,15 @@ axiosClient.interceptors.request.use((config) => {
 axiosClient.interceptors.response.use(
   (response) => response,
   (error) => {
+    const data = error.response?.data
+    const detail = data?.detail
     const message: string =
-      error.response?.data?.message ?? error.message ?? 'Unknown error'
+      data?.message ??
+      (typeof detail === 'string' ? detail : detail?.message) ??
+      error.message ??
+      'Unknown error'
     const status: number = error.response?.status ?? 0
-    return Promise.reject({ message, status })
+    return Promise.reject({ message, status, data })
   }
 )
 

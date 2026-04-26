@@ -133,6 +133,11 @@ cd backend
 python -m pytest tests/ -v   # run test suite
 ```
 
+> To run against the Neon DB directly (requires `DATABASE_URL` to be set):
+> ```bash
+> DATABASE_URL='postgresql+asyncpg://...' ENVIRONMENT=test API_KEY=test-key pytest tests/ -v
+> ```
+
 ## Notes
 
 - Frontend `.env` and `.env.*` files are ignored; only `.env.example` is tracked
@@ -203,8 +208,10 @@ This value is used only at build time in CI and is not hardcoded in repository f
 src/
 ├── api/
 │   ├── axiosClient.ts       # Axios instance with interceptors
-│   ├── products.ts          # getProducts(), getProductById()
-│   └── categories.ts        # getCategories()
+│   ├── products.ts          # getProducts(), getProduct(), createProduct(), updateProduct(), deleteProduct()
+│   ├── categories.ts        # getCategories(), createCategory(), deleteCategory()
+│   ├── customers.ts         # registerCustomer(), listCustomers(), deleteCustomer()
+│   └── orders.ts            # createOrder(), getOrder(), listOrders(), updateOrderStatus(), deleteOrder()
 ├── components/
 │   ├── layout/
 │   │   ├── Navbar.tsx       # Sticky, scroll-aware, mobile hamburger
@@ -219,23 +226,32 @@ src/
 │   │   ├── HeroSection.tsx  # Full-viewport hero with animated text
 │   │   ├── CategoryStrip.tsx# Category cards with skeleton loading
 │   │   ├── ProductGrid.tsx  # Filtered product grid
-│   │   ├── ProductCard.tsx  # Product card with hover actions
+│   │   ├── ProductCard.tsx  # Product card — links to /products/:id
 │   │   └── AboutSection.tsx # Brand story, scroll-animated
 │   └── cart/
-│       ├── CartDrawer.tsx   # Slide-in cart drawer (Framer Motion)
+│       ├── CartDrawer.tsx   # Slide-in cart drawer, "Proceed to Checkout" → /checkout
 │       └── CartItem.tsx     # Quantity controls, remove
 ├── hooks/
 │   ├── useProducts.ts       # React Query wrapper, mock fallback
 │   ├── useCategories.ts     # React Query wrapper, mock fallback
 │   └── useCart.ts           # Zustand cart selectors
 ├── store/
-│   └── cartStore.ts         # Zustand cart store (persisted)
+│   └── cartStore.ts         # Zustand cart store (persisted to localStorage)
 ├── types/
-│   └── index.ts             # Product, Category, CartItem interfaces
+│   └── index.ts             # Product, Category, CartItem, Customer, Order, OrderItem interfaces
 ├── pages/
 │   ├── HomePage.tsx         # Hero + CategoryStrip + ProductGrid + About
 │   ├── ProductsPage.tsx     # Full catalog with category filters
-│   └── NotFoundPage.tsx     # Branded 404 with gold animation
+│   ├── ProductDetailPage.tsx# /products/:productId — image, SKU, stock, Add to Cart
+│   ├── CheckoutPage.tsx     # /checkout — customer registration + order placement (2-step)
+│   ├── OrderConfirmationPage.tsx # /order-confirmation/:orderId — success screen
+│   ├── NotFoundPage.tsx     # Branded 404 with gold animation
+│   └── admin/
+│       ├── AdminLayout.tsx       # API-key guard + sidebar nav
+│       ├── AdminProductsPage.tsx # CRUD products table
+│       ├── AdminCategoriesPage.tsx # CRUD categories table
+│       ├── AdminCustomersPage.tsx  # Search + delete customers
+│       └── AdminOrdersPage.tsx     # List, status update, delete orders
 ├── router/
 │   └── index.tsx            # React Router v6 + AnimatePresence
 ├── App.tsx
@@ -247,11 +263,21 @@ src/
 
 ## Routes
 
-| Path | Page |
-|---|---|
-| `/` | Home (Hero, Categories, Products, About) |
-| `/shop` | Full product catalog with filters |
-| `/*` | 404 Not Found |
+| Path | Page | Auth |
+|---|---|---|
+| `/` | Home (Hero, Categories, Products, About) | — |
+| `/shop` | Full product catalog with filters | — |
+| `/collections` | Category cards | — |
+| `/about` | Brand story | — |
+| `/products/:productId` | Product detail — image, SKU, stock, Add to Cart | — |
+| `/checkout` | Two-step checkout (customer info → order review) | — |
+| `/order-confirmation/:orderId` | Order success screen | — |
+| `/admin` | Redirects to `/admin/products` | API key |
+| `/admin/products` | Create / edit / delete products | API key |
+| `/admin/categories` | Create / delete categories | API key |
+| `/admin/customers` | Search + delete customers | API key |
+| `/admin/orders` | List, update status, delete orders | API key |
+| `/*` | 404 Not Found | — |
 
 ---
 

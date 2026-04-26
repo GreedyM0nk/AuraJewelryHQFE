@@ -6,7 +6,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.dependencies import require_admin
 from app.schemas.category import CategoryCreate, CategoryOut, CategoryWithProducts
-from app.services.category_service import create_category, get_categories, get_category_with_products
+from app.services.category_service import (
+    create_category,
+    delete_category,
+    get_categories,
+    get_category_with_products,
+)
 
 router = APIRouter(tags=['categories'])
 
@@ -29,3 +34,13 @@ async def get_category(category_id: uuid.UUID, db: AsyncSession = Depends(get_db
 )
 async def create_category_endpoint(payload: CategoryCreate, db: AsyncSession = Depends(get_db)):
     return await create_category(payload, db)
+
+
+@router.delete(
+    '/categories/{category_id}',
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(require_admin)],
+)
+async def delete_category_endpoint(category_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
+    await delete_category(category_id, db)
+    return None
