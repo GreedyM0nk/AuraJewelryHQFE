@@ -306,11 +306,14 @@ src/
 | `/shop` | Full product catalog with filters | — |
 | `/collections` | Category cards | — |
 | `/about` | Brand story | — |
+| `/investor-relations` | Investor relations overview (ESG + annual highlights) | — |
 | `/products/:productId` | Product detail — image, SKU, stock, Add to Cart | — |
 | `/checkout` | Two-step checkout (customer info → order review) | — |
 | `/order-confirmation/:orderId` | Order success screen | — |
 | `/privacy-policy` | Privacy policy page | — |
 | `/terms` | Terms of service page | — |
+| `/investor-relations#esg` | ESG section deep link | — |
+| `/investor-relations#annual` | Annual section deep link | — |
 | `/admin` | Redirects to `/admin/products` | API key |
 | `/admin/products` | Create / edit / delete products | API key |
 | `/admin/categories` | Create / delete categories | API key |

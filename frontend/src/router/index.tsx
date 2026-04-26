@@ -10,6 +10,7 @@ const HomePage = lazy(() => import('@/pages/HomePage'))
 const ProductsPage = lazy(() => import('@/pages/ProductsPage'))
 const CollectionsPage = lazy(() => import('@/pages/CollectionsPage'))
 const AboutPage = lazy(() => import('@/pages/AboutPage'))
+const InvestorRelationsPage = lazy(() => import('@/pages/InvestorRelationsPage'))
 const PrivacyPolicyPage = lazy(() => import('@/pages/PrivacyPolicyPage'))
 const TermsPage = lazy(() => import('@/pages/TermsPage'))
 const CheckoutPage = lazy(() => import('@/pages/CheckoutPage'))
@@ -34,6 +35,7 @@ const AnimatedRoutes: React.FC = () => {
         <Route path="/products/:productId" element={<ProductDetailPage />} />
         <Route path="/collections" element={<CollectionsPage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/investor-relations" element={<InvestorRelationsPage />} />
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/admin" element={<AdminLayout />}>
