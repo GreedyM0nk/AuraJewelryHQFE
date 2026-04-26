@@ -18,7 +18,7 @@ def _mask_email_columns(df):
 def render() -> None:
     apply_global_style()
     st.title("⚙️ Data Explorer")
-    st.caption("Analyst workspace for ad-hoc SQL with CSV export.")
+    st.caption("Analyst workspace for approved read-only SQL templates with CSV export.")
 
     selected = st.selectbox("Saved Query", options=list(SAVED_QUERIES.keys()))
     sql = st.text_area("SQL", value=SAVED_QUERIES[selected], height=220)
@@ -26,7 +26,7 @@ def render() -> None:
     if st.button("Run Query", type="primary"):
         df, elapsed_ms = run_query_with_timing(sql)
         if df.empty:
-            st.info("No rows returned or query failed.")
+            st.info("No rows returned, query blocked by policy, or query failed.")
         else:
             display_df = _mask_email_columns(df)
             st.success(f"Returned {len(df):,} rows in {elapsed_ms:.1f} ms")

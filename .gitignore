@@ -60,3 +60,5 @@ aura-dashboard/.streamlit/*.local.toml
 aura-dashboard/.venv/
 aura-dashboard/__pycache__/
 aura-dashboard/.pytest_cache/
+
+aura-dashboard/**/__pycache__/

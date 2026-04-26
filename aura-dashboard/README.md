@@ -14,7 +14,7 @@ Executive-grade Streamlit analytics portal connected to the live Neon PostgreSQL
 - Live SQL-backed visualizations (Plotly)
 - 5-minute data cache (`st.cache_data(ttl=300)`)
 - Dark luxury UI theme
-- SQL Data Explorer with CSV download
+- SQL Data Explorer with CSV download (approved read-only templates)
 - Email masking in displayed analyst tables
 
 ## Project Structure

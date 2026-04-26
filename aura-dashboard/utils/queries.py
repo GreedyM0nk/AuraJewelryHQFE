@@ -234,6 +234,12 @@ GROUP BY sales_channel
 ORDER BY cancel_rate DESC
 """
 
+PENDING_REVENUE_SQL = """
+SELECT ROUND(COALESCE(SUM(total_amount),0)::numeric,2) AS pending_value
+FROM orders
+WHERE status='pending'
+"""
+
 SAVED_QUERIES = {
     "Revenue by Category": "SELECT c.name, ROUND(SUM(oi.quantity * oi.unit_price)::numeric,2) AS revenue FROM order_items oi JOIN products p ON p.id=oi.product_id JOIN categories c ON c.id=p.category_id GROUP BY c.name ORDER BY revenue DESC",
     "Customer CLV Ranking": "SELECT c.name, c.country, COUNT(o.id) AS orders, ROUND(SUM(o.total_amount)::numeric,2) AS clv FROM customers c JOIN orders o ON o.customer_id=c.id GROUP BY c.id, c.name, c.country ORDER BY clv DESC",

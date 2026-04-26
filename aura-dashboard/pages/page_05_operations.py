@@ -9,7 +9,7 @@ from plotly.subplots import make_subplots
 from scipy.stats import gaussian_kde
 
 from utils.db import run_query
-from utils.queries import CANCEL_SQL, CHANNEL_RADAR_SQL, DAILY_ORDERS_SQL, FUNNEL_SQL, ORDER_DIST_SQL
+from utils.queries import CANCEL_SQL, CHANNEL_RADAR_SQL, DAILY_ORDERS_SQL, FUNNEL_SQL, ORDER_DIST_SQL, PENDING_REVENUE_SQL
 from utils.styling import apply_global_style, apply_theme, format_inr, render_footer
 
 
@@ -112,7 +112,7 @@ def render() -> None:
     if not cancel_df.empty:
         st.dataframe(cancel_df, use_container_width=True, hide_index=True)
 
-    pending_df = run_query("SELECT ROUND(COALESCE(SUM(total_amount),0)::numeric,2) AS pending_value FROM orders WHERE status='pending'")
+    pending_df = run_query(PENDING_REVENUE_SQL)
     pending_value = float(pending_df.iloc[0, 0]) if not pending_df.empty else 0.0
     st.metric("Revenue at risk from pending orders", format_inr(pending_value))
 
