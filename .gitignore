@@ -39,6 +39,9 @@ backend/.ruff_cache/
 # Docker
 docker-compose.override.yml
 
+# Local nested repositories (never commit)
+local-repos/
+
 # Browser Testing & Screenshots
 *.png
 *.jpg
@@ -50,3 +53,12 @@ screenshot-*.{png,jpg,jpeg}
 trace.json
 trace.json.gz
 *.har
+
+# Aura dashboard local artifacts
+aura-dashboard/.streamlit/secrets.toml
+aura-dashboard/.streamlit/*.local.toml
+aura-dashboard/.venv/
+aura-dashboard/__pycache__/
+aura-dashboard/.pytest_cache/
+
+aura-dashboard/**/__pycache__/

@@ -8,8 +8,40 @@ Production retail site for Aura Jewellery — handcrafted charms & bracelets fro
 aura-jewellery-hq/
 ├── frontend/          Vite + React + TypeScript + Tailwind CSS
 ├── backend/           FastAPI + SQLAlchemy + NeonDB (PostgreSQL)
+├── aura-dashboard/    Streamlit investor relations + live analytics portal
 └── .github/           CI/CD workflows
 ```
+
+## Investor Dashboard (Streamlit)
+
+`aura-dashboard` is the recruiter-facing investor relations analytics application backed by the same live Neon database.
+
+### Key capabilities
+
+- Executive summary KPIs and fulfillment funnel
+- Revenue intelligence (trend, treemap, Pareto, MoM)
+- Customer analytics (CLV tiers, RFM matrix, geography)
+- Product and inventory risk analytics
+- Order operations (Sankey, radar, calendar heatmap)
+- SQL Data Explorer with CSV export
+
+### Run locally
+
+```bash
+cd aura-dashboard
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+# set DATABASE_URL in .streamlit/secrets.toml
+streamlit run app.py
+```
+
+### Deploy (Streamlit Community Cloud)
+
+1. Push repository to GitHub.
+2. Create a new app at `share.streamlit.io`.
+3. Set `DATABASE_URL` in App Settings -> Secrets.
+4. Deploy.
 
 ## Branching Strategy
 
