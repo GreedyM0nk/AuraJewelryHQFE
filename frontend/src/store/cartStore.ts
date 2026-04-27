@@ -5,6 +5,8 @@ import type { CartItem, Product } from '@/types'
 interface CartState {
   items: CartItem[]
   isOpen: boolean
+  lastAddedAt: number
+  lastAddedProductName: string | null
   addItem: (product: Product, quantity?: number) => void
   removeItem: (productId: string) => void
   updateQuantity: (productId: string, quantity: number) => void
@@ -17,19 +19,30 @@ export const useCartStore = create<CartState>()(
     (set) => ({
       items: [],
       isOpen: false,
+      lastAddedAt: 0,
+      lastAddedProductName: null,
 
       addItem: (product, quantity = 1) =>
         set((state) => {
-          const safeQuantity = Math.max(1, Math.floor(quantity))
+          const safeQty = Math.max(1, Math.floor(quantity))
+          const maxQty = product.stock_quantity ?? Infinity
           const existing = state.items.find((i) => i.product.id === product.id)
           if (existing) {
             return {
               items: state.items.map((i) =>
-                i.product.id === product.id ? { ...i, quantity: i.quantity + safeQuantity } : i
+                i.product.id === product.id
+                  ? { ...i, quantity: Math.min(i.quantity + safeQty, maxQty) }
+                  : i
               ),
+              lastAddedAt: Date.now(),
+              lastAddedProductName: product.name,
             }
           }
-          return { items: [...state.items, { product, quantity: safeQuantity }] }
+          return {
+            items: [...state.items, { product, quantity: Math.min(safeQty, maxQty) }],
+            lastAddedAt: Date.now(),
+            lastAddedProductName: product.name,
+          }
         }),
 
       removeItem: (productId) =>
@@ -38,14 +51,20 @@ export const useCartStore = create<CartState>()(
         })),
 
       updateQuantity: (productId, quantity) =>
-        set((state) => ({
-          items:
-            quantity <= 0
-              ? state.items.filter((i) => i.product.id !== productId)
-              : state.items.map((i) =>
-                  i.product.id === productId ? { ...i, quantity } : i
-                ),
-        })),
+        set((state) => {
+          if (quantity <= 0) {
+            return { items: state.items.filter((i) => i.product.id !== productId) }
+          }
+          return {
+            items: state.items.map((i) => {
+              if (i.product.id !== productId) {
+                return i
+              }
+              const maxQty = i.product.stock_quantity ?? Infinity
+              return { ...i, quantity: Math.min(quantity, maxQty) }
+            }),
+          }
+        }),
 
       clearCart: () => set({ items: [] }),
 

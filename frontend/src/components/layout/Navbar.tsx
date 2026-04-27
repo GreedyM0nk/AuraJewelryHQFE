@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ShoppingBag, Search, Menu, X } from 'lucide-react'
+import { ShoppingBag, Search, Menu, X, Heart } from 'lucide-react'
 import { useCart } from '@/hooks/useCart'
+import { useWishlistStore } from '@/store/wishlistStore'
 import { SearchModal } from '@/components/search/SearchModal'
 import logo from '@/assets/logo.png'
 
@@ -18,6 +19,9 @@ export const Navbar: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const { totalItems, toggleCart } = useCart()
+  const wishlistCount = useWishlistStore((s) => s.items.length)
+  const location = useLocation()
+  const isHomePage = location.pathname === '/'
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
@@ -25,9 +29,31 @@ export const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  useEffect(() => {
+    setMobileOpen(false)
+  }, [location.pathname])
+
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden'
+      document.body.style.height = '100vh'
+    } else {
+      document.body.style.overflow = ''
+      document.body.style.height = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+      document.body.style.height = ''
+    }
+  }, [mobileOpen])
+
+  const handleNavClick = () => {
+    setMobileOpen(false)
+  }
+
   const navBase =
     'fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out border-b'
-  const navBg = scrolled
+  const navBg = (scrolled || !isHomePage)
     ? 'bg-brand-black/95 backdrop-blur-md border-brand-gold/20 shadow-[0_4px_30px_rgba(201,168,76,0.08)]'
     : 'bg-transparent border-transparent'
 
@@ -65,7 +91,7 @@ export const Navbar: React.FC = () => {
             </nav>
 
             {/* Right actions */}
-            <div className="flex items-center gap-1 sm:gap-3 lg:gap-4">
+            <div className="flex items-center gap-1 sm:gap-3 lg:gap-4 overflow-hidden">
               <button
                 aria-label="Search"
                 className="text-brand-cream/70 hover:text-brand-gold transition-colors duration-200 flex min-h-[48px] min-w-[48px] items-center justify-center"
@@ -74,9 +100,22 @@ export const Navbar: React.FC = () => {
                 <Search size={20} />
               </button>
 
+              <Link
+                to="/wishlist"
+                aria-label={`Wishlist, ${wishlistCount} items`}
+                className="relative text-brand-cream/70 hover:text-brand-gold transition-colors duration-200 min-h-[48px] min-w-[48px] flex items-center justify-center"
+              >
+                <Heart size={20} />
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-2 -right-2 w-4 h-4 bg-brand-gold text-brand-black text-[10px] font-bold rounded-full flex items-center justify-center">
+                    {wishlistCount > 9 ? '9+' : wishlistCount}
+                  </span>
+                )}
+              </Link>
+
               <button
                 aria-label={`Cart, ${totalItems} items`}
-                className="relative text-brand-cream/70 hover:text-brand-gold transition-colors duration-200 min-h-[48px] min-w-[48px] flex items-center justify-center"
+                className="relative text-brand-cream/70 hover:text-brand-gold transition-colors duration-200 min-h-[48px] min-w-[48px] flex items-center justify-center flex-shrink-0"
                 onClick={toggleCart}
               >
                 <ShoppingBag size={20} />
@@ -114,7 +153,7 @@ export const Navbar: React.FC = () => {
         {mobileOpen && (
           <motion.div
             key="mobile-menu"
-            className="fixed inset-0 z-40 bg-brand-black/98 flex flex-col items-center justify-center gap-8"
+            className="fixed inset-0 z-50 bg-brand-black flex flex-col items-center justify-center gap-8"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -126,7 +165,7 @@ export const Navbar: React.FC = () => {
                   key={to}
                   to={to}
                   end={to === '/'}
-                  onClick={() => setMobileOpen(false)}
+                  onClick={handleNavClick}
                   className={({ isActive }) =>
                     `font-accent text-xl tracking-widest uppercase transition-colors duration-200 min-h-[48px] px-3 flex items-center ${
                       isActive ? 'text-brand-gold' : 'text-brand-cream/70 hover:text-brand-gold'
@@ -141,7 +180,7 @@ export const Navbar: React.FC = () => {
               href="https://wa.me/919000000000?text=Hi!%20I%27d%20like%20to%20book%20a%20jewellery%20consultation."
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => setMobileOpen(false)}
+              onClick={handleNavClick}
               className="inline-flex items-center justify-center gap-2 font-accent tracking-widest uppercase transition-all duration-300 bg-transparent text-brand-gold border border-brand-gold hover:bg-brand-gold hover:text-brand-black px-6 py-2 text-sm"
             >
               Book Consultation

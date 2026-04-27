@@ -13,8 +13,16 @@ const COMPANY_LINKS = [
 ]
 
 const TRANSPARENCY_LINKS = [
-  { label: 'Annual Performance', href: '/investor-relations#annual', description: 'Revenue & growth metrics' },
-  { label: 'ESG Report', href: '/investor-relations#esg', description: 'Sustainability disclosures' },
+  {
+    label: 'Annual Performance',
+    href: `${import.meta.env.VITE_INVESTOR_RELATIONS_URL ?? '/investor-relations'}#annual`,
+    description: 'Revenue and growth metrics',
+  },
+  {
+    label: 'ESG Report',
+    href: `${import.meta.env.VITE_INVESTOR_RELATIONS_URL ?? '/investor-relations'}#esg`,
+    description: 'Sustainability disclosures',
+  },
 ]
 
 const PinterestIcon = () => (
@@ -27,8 +35,7 @@ export const Footer: React.FC = () => {
   return (
     <footer className="bg-brand-charcoal border-t border-brand-gold/20" aria-label="Site footer">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10">
-
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 [&>*:last-child]:sm:col-span-2 [&>*:last-child]:lg:col-span-1">
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex flex-col items-start gap-3 mb-4">
@@ -112,6 +119,58 @@ export const Footer: React.FC = () => {
             </p>
           </div>
 
+          {/* Corporate Transparency */}
+          <div aria-labelledby="footer-corporate-transparency">
+            <h3
+              id="footer-corporate-transparency"
+              className="font-accent text-brand-gold text-xs tracking-widest uppercase mb-5"
+            >
+              Corporate Transparency
+            </h3>
+
+            <a
+              href={import.meta.env.VITE_INVESTOR_RELATIONS_URL ?? '/investor-relations'}
+              className="group flex items-start gap-3 mb-6 p-3 border border-brand-gold/15 hover:border-brand-gold/40 transition-all duration-300 rounded-sm"
+              aria-label="Open Investor Relations"
+            >
+              <div className="mt-0.5 text-brand-gold/70 group-hover:text-brand-gold transition-colors duration-200 shrink-0">
+                <BarChart2 size={16} />
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-accent text-brand-cream/80 text-xs tracking-wider group-hover:text-brand-gold transition-colors duration-200 uppercase">
+                    Investor Relations
+                  </span>
+                  <ExternalLink
+                    size={10}
+                    className="text-brand-cream/50 group-hover:text-brand-gold transition-colors duration-200 shrink-0"
+                    aria-hidden="true"
+                  />
+                </div>
+                <p className="font-body text-brand-cream/40 text-xs mt-0.5 leading-relaxed">
+                  Live performance dashboard
+                </p>
+              </div>
+            </a>
+
+            <ul className="space-y-3">
+              {TRANSPARENCY_LINKS.map((item) => (
+                <li key={item.label}>
+                  <a href={item.href} className="group flex flex-col gap-0.5">
+                    <span className="font-body text-brand-cream/60 text-sm group-hover:text-brand-gold transition-colors duration-200">
+                      {item.label}
+                    </span>
+                    <span className="font-body text-brand-cream/30 text-xs">{item.description}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+
+            <p className="font-body text-brand-cream/25 text-xs mt-6 leading-relaxed italic">
+              Financial disclosures in accordance with applicable Indian corporate governance standards.
+            </p>
+          </div>
         </div>
 
         <GoldDivider className="my-10" />

@@ -96,6 +96,7 @@ Backend: http://localhost:8000
 ### Frontend (.env.example)
 ```
 VITE_API_URL=http://localhost:8000
+VITE_INVESTOR_RELATIONS_URL=/investor-relations
 ```
 
 ### Backend (.env.example)
@@ -157,6 +158,8 @@ Copy values from `.vercel/project.json` to GitHub secrets:
 ```bash
 cd frontend
 npm run build      # production build
+npm run test       # run frontend unit tests once
+npm run test:coverage  # run tests with coverage report
 ```
 
 **Backend:**
@@ -231,6 +234,9 @@ This value is used only at build time in CI and is not hardcoded in repository f
 | `npm run preview` | Preview production build locally |
 | `npm run lint` | Run ESLint across all TS/TSX files |
 | `npm run format` | Auto-format with Prettier |
+| `npm run test` | Run Vitest unit tests |
+| `npm run test:watch` | Run Vitest in watch mode |
+| `npm run test:coverage` | Run unit tests with coverage report |
 
 ---
 
@@ -267,17 +273,19 @@ src/
 │       ├── CartDrawer.tsx   # Slide-in cart drawer, "Proceed to Checkout" → /checkout
 │       └── CartItem.tsx     # Quantity controls, remove
 ├── hooks/
-│   ├── useProducts.ts       # React Query wrapper, mock fallback
-│   ├── useCategories.ts     # React Query wrapper, mock fallback
+│   ├── useProducts.ts       # React Query wrapper, URL-driven category/search/sort params
+│   ├── useCategories.ts     # React Query categories query
 │   └── useCart.ts           # Zustand cart selectors
 ├── store/
-│   └── cartStore.ts         # Zustand cart store (persisted to localStorage)
+│   ├── cartStore.ts         # Zustand cart store (persisted to localStorage)
+│   └── wishlistStore.ts     # Zustand wishlist store (persisted to localStorage)
 ├── types/
 │   └── index.ts             # Product, Category, CartItem, Customer, Order, OrderItem interfaces
 ├── pages/
 │   ├── HomePage.tsx         # Hero + CategoryStrip + ProductGrid + About
 │   ├── ProductsPage.tsx     # Full catalog with category filters
 │   ├── ProductDetailPage.tsx# /products/:productId — image, SKU, stock, Add to Cart
+│   ├── WishlistPage.tsx     # /wishlist — saved favourites grid
 │   ├── CheckoutPage.tsx     # /checkout — customer registration + order placement (2-step)
 │   ├── OrderConfirmationPage.tsx # /order-confirmation/:orderId — success screen
 │   ├── PrivacyPolicyPage.tsx # /privacy-policy
@@ -304,6 +312,7 @@ src/
 |---|---|---|
 | `/` | Home (Hero, Categories, Products, About) | — |
 | `/shop` | Full product catalog with filters | — |
+| `/wishlist` | Saved products wishlist | — |
 | `/collections` | Category cards | — |
 | `/about` | Brand story | — |
 | `/investor-relations` | Investor relations overview (ESG + annual highlights) | — |

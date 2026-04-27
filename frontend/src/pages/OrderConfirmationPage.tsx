@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
 import { CheckCircle2 } from 'lucide-react'
 import { PageWrapper } from '@/components/layout/PageWrapper'
@@ -7,10 +7,17 @@ import { GoldDivider } from '@/components/ui/GoldDivider'
 import { getOrder } from '@/api/orders'
 import type { Order } from '@/types'
 
+type OrderLineItem = {
+  name: string
+  quantity: number
+  unitPrice: number
+  lineTotal: number
+}
+
 type OrderConfirmationState = {
   orderId?: string
   totalAmount?: number
-  items?: Order['items']
+  items?: OrderLineItem[]
   customerName?: string
   order?: Order
   cartSummary?: Array<{
@@ -58,17 +65,17 @@ const OrderConfirmationPage: React.FC = () => {
   }, [orderId, state])
 
   const resolvedOrder = state?.order ?? fetchedOrder
-  const resolvedItems = state?.items ?? resolvedOrder?.items ?? []
+  const resolvedItems: OrderLineItem[] =
+    state?.items ??
+    (resolvedOrder?.items ?? []).map((item) => ({
+      name: `Product ${item.product_id.slice(0, 8)}`,
+      quantity: item.quantity,
+      unitPrice: item.unit_price,
+      lineTotal: displayLineTotal(item.quantity, item.unit_price),
+    }))
   const resolvedOrderId = state?.orderId ?? resolvedOrder?.id ?? orderId ?? ''
   const resolvedTotal =
     typeof state?.totalAmount === 'number' ? state.totalAmount : resolvedOrder?.total_amount
-  const nameByProductId = useMemo(() => {
-    const map = new Map<string, string>()
-    for (const item of state?.cartSummary ?? []) {
-      map.set(item.product_id, item.name)
-    }
-    return map
-  }, [state?.cartSummary])
   const displayName = state?.customerName?.trim() || null
 
   const displayLineTotal = (quantity: number, unitPrice: number) => quantity * unitPrice
@@ -105,15 +112,15 @@ const OrderConfirmationPage: React.FC = () => {
                   <span>Unit</span>
                   <span>Line Total</span>
                 </div>
-                {resolvedItems.map((item) => (
+                {resolvedItems.map((item, idx) => (
                   <div
-                    key={item.id}
+                    key={`${item.name}-${idx}`}
                     className="grid grid-cols-[1fr_auto_auto_auto] gap-2 px-3 py-2 border-t border-brand-gold/10"
                   >
-                    <span>{nameByProductId.get(item.product_id) ?? `Product ${item.product_id.slice(0, 8)}`}</span>
+                    <span>{item.name}</span>
                     <span>{item.quantity}</span>
-                    <span>{formatPrice(item.unit_price)}</span>
-                    <span>{formatPrice(displayLineTotal(item.quantity, item.unit_price))}</span>
+                    <span>{formatPrice(item.unitPrice)}</span>
+                    <span>{formatPrice(item.lineTotal)}</span>
                   </div>
                 ))}
               </div>

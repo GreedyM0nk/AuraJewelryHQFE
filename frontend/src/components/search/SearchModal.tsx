@@ -113,13 +113,13 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
         )}
 
         {!!query.trim() && (
-          <div className="mt-3 text-right">
+          <div className="mt-3">
             <Link
               to={`/shop?search=${encodeURIComponent(query.trim())}`}
               onClick={onClose}
-              className="font-accent text-xs tracking-widest text-brand-gold hover:underline"
+              className="font-accent text-brand-gold text-xs tracking-widest uppercase hover:underline mt-4 block text-center"
             >
-              View all results
+              View all results ({results.length}+) {'->'}
             </Link>
           </div>
         )}
