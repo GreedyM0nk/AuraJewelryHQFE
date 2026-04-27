@@ -145,12 +145,32 @@ const AdminProductsPage: React.FC = () => {
     }
   }
 
+  const criticalStock = products.filter((p) => p.stock_quantity <= 3)
+  const lowStock = products.filter((p) => p.stock_quantity > 3 && p.stock_quantity <= 7)
+
   return (
     <div>
       <div className="flex items-center justify-between gap-3 mb-4">
         <h1 className="font-accent text-brand-gold tracking-widest uppercase text-base">Products</h1>
         <Button onClick={openAdd}>Add Product</Button>
       </div>
+
+      {!loading && criticalStock.length > 0 && (
+        <div className="flex items-start gap-3 border border-red-500/30 bg-red-500/10 px-4 py-3 mb-4 rounded-sm">
+          <span className="text-red-400 text-xs font-accent tracking-widest uppercase shrink-0">⚠ Critical Stock</span>
+          <p className="font-body text-red-300/80 text-xs">
+            {criticalStock.map((p) => `${p.name} (${p.stock_quantity} left)`).join(' · ')}
+          </p>
+        </div>
+      )}
+      {!loading && lowStock.length > 0 && (
+        <div className="flex items-start gap-3 border border-amber-500/30 bg-amber-500/10 px-4 py-3 mb-4 rounded-sm">
+          <span className="text-amber-400 text-xs font-accent tracking-widest uppercase shrink-0">Low Stock</span>
+          <p className="font-body text-amber-300/80 text-xs">
+            {lowStock.map((p) => `${p.name} (${p.stock_quantity} left)`).join(' · ')}
+          </p>
+        </div>
+      )}
 
       {error && <p className="text-sm text-red-400 mb-4">{error}</p>}
 

@@ -356,4 +356,6 @@ Custom Tailwind colours under `brand.*`:
 | `brand-cream` | `#F5F0E8` |
 | `brand-white` | `#FAFAFA` |
 
-Fonts: **Cormorant Garamond** (display) · **Jost** (body) · **Cinzel** (accent) — loaded from Google Fonts.
+Fonts: **Cormorant Garamond** (display) · **Jost** (body) · **Cinzel** (accent) — loaded from Google Fonts.   
+
+******************************************EOF******************************

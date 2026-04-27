@@ -87,6 +87,33 @@ def normalize_dsn(dsn: str) -> str:
     return dsn.replace('postgresql+asyncpg://', 'postgresql://', 1)
 
 
+# Stock replenishment — bumps stock on critically low items back to base levels
+# Safe to run repeatedly (uses UPDATE WHERE stock < threshold, not INSERT)
+STOCK_REPLENISHMENT = [
+    ('AJ-001', 10), ('AJ-002', 8),  ('AJ-003', 15),
+    ('AJ-004', 6),  ('AJ-005', 10), ('AJ-006', 8),
+    ('AJ-007', 12), ('AJ-008', 6),  ('AJ-009', 8),
+    ('AJ-010', 5),  ('AJ-011', 8),  ('AJ-012', 8),
+]
+
+
+async def replenish_stock(conn: asyncpg.Connection) -> None:
+    """Only replenish if stock has dropped below half the base level."""
+    replenished = 0
+    for sku, base_stock in STOCK_REPLENISHMENT:
+        threshold = base_stock // 2
+        result = await conn.execute(
+            '''
+            UPDATE products SET stock_quantity = $1
+            WHERE sku = $2 AND stock_quantity < $3
+            ''',
+            base_stock, sku, threshold,
+        )
+        if result.endswith('1'):
+            replenished += 1
+    print(f'✅ Stock replenishment complete ({replenished} products restocked)')
+
+
 async def seed() -> None:
     dsn = os.getenv('DATABASE_URL')
     if not dsn:
@@ -124,6 +151,7 @@ async def seed() -> None:
                 products_count += 1
 
         print(f'✅ Seeded {categories_count} categories, {products_count} products')
+        await replenish_stock(conn)
     finally:
         await conn.close()
 

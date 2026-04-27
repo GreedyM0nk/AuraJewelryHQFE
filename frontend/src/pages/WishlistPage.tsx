@@ -4,12 +4,19 @@ import { Heart } from 'lucide-react'
 import { useWishlistStore } from '@/store/wishlistStore'
 import { ProductCard } from '@/components/home/ProductCard'
 import { PageWrapper } from '@/components/layout/PageWrapper'
+import { SEO } from '@/components/SEO'
+import { useCart } from '@/hooks/useCart'
 
 const WishlistPage: React.FC = () => {
-  const { items, clearWishlist } = useWishlistStore()
+  const { items, clearWishlist, toggleItem } = useWishlistStore()
+  const { addItem, toggleCart } = useCart()
 
   return (
     <PageWrapper>
+      <SEO
+        title="Your Wishlist"
+        description="Your saved jewellery pieces from Aura Jewellery HQ. Handcrafted charms, bracelets and necklaces from Kolkata."
+      />
       <main className="pt-24 sm:pt-28 pb-16 min-h-screen px-4">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-8 sm:mb-12 gap-3">
@@ -41,8 +48,18 @@ const WishlistPage: React.FC = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px bg-brand-gold/10">
               {items.map((product) => (
-                <div key={product.id} className="bg-brand-black">
+                <div key={product.id} className="bg-brand-black flex flex-col">
                   <ProductCard product={product} />
+                  <button
+                    onClick={() => {
+                      addItem(product)
+                      toggleItem(product)
+                      toggleCart?.()
+                    }}
+                    className="w-full font-accent text-xs tracking-widest uppercase py-2 border border-brand-gold/30 text-brand-gold/70 hover:bg-brand-gold hover:text-brand-black transition-all duration-200"
+                  >
+                    Move to Cart
+                  </button>
                 </div>
               ))}
             </div>
