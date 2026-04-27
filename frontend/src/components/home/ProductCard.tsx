@@ -3,6 +3,7 @@ import { ShoppingBag, Heart } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Badge } from '@/components/ui/Badge'
 import { useCart } from '@/hooks/useCart'
+import { useWishlistStore } from '@/store/wishlistStore'
 import type { Product } from '@/types'
 
 interface ProductCardProps {
@@ -15,8 +16,17 @@ const formatPrice = (price: number) =>
   )
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const { addItem } = useCart()
+  const { addItem, toggleCart } = useCart()
+  const { toggleItem, isWishlisted } = useWishlistStore()
+  const wishlisted = isWishlisted(product.id)
   const lowStock = product.stock_quantity > 0 && product.stock_quantity < 5
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    addItem(product)
+    toggleCart?.()
+  }
 
   return (
     <article className="group relative overflow-hidden rounded-none border border-transparent hover:border-brand-gold/40 transition-all duration-500 hover:shadow-[0_8px_40px_rgba(201,168,76,0.15)] flex flex-col bg-brand-charcoal">
@@ -56,17 +66,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
         {/* Wishlist button — appears on hover */}
         <button
-          className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-8 h-8 flex items-center justify-center bg-brand-black/80 backdrop-blur-sm rounded-full border border-brand-gold/30 hover:border-brand-gold"
           aria-label={`Wishlist ${product.name}`}
-          onClick={(e) => e.preventDefault()}
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleItem(product) }}
+          className={`absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-colors duration-200 min-h-[44px] min-w-[44px] flex items-center justify-center ${
+            wishlisted ? 'text-red-400' : 'text-brand-cream/40 hover:text-red-400'
+          }`}
         >
-          <Heart size={14} className="text-brand-gold" />
+          <Heart size={16} fill={wishlisted ? 'currentColor' : 'none'} />
         </button>
 
         {/* Add to Cart overlay — slides up from bottom on group hover */}
         <button
           className="absolute bottom-0 left-0 right-0 translate-y-full group-hover:translate-y-0 transition-transform duration-[400ms] ease-out bg-brand-gold px-4 py-3 flex items-center justify-center gap-2 cursor-pointer z-10"
-          onClick={() => addItem(product)}
+          onClick={handleAddToCart}
           aria-label={`Add ${product.name} to cart`}
           disabled={product.stock_quantity === 0}
         >
@@ -102,7 +114,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <div className="px-4 pb-4 group-hover:opacity-0 transition-opacity duration-200">
         <button
           className="w-full border border-brand-gold/30 text-brand-gold/70 font-accent text-xs tracking-widest uppercase py-2 hover:bg-brand-gold hover:text-brand-black transition-all duration-200"
-          onClick={() => addItem(product)}
+          onClick={handleAddToCart}
           disabled={product.stock_quantity === 0}
           aria-label={`Add ${product.name} to cart`}
         >

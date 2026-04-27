@@ -17,7 +17,7 @@ const CheckoutPage: React.FC = () => {
   const [step, setStep] = useState<1 | 2>(1)
   const [customerId, setCustomerId] = useState('')
   const [inlineError, setInlineError] = useState('')
-  const [emailError, setEmailError] = useState('')
+  const [errors, setErrors] = useState<Record<string, string>>({})
   const [submitting, setSubmitting] = useState(false)
   const [customerForm, setCustomerForm] = useState<CustomerCreate>({
     name: '',
@@ -38,16 +38,48 @@ const CheckoutPage: React.FC = () => {
     [items]
   )
 
+  const validateField = (name: string, value: string) => {
+    const trimmed = value.trim()
+    if (name === 'name') {
+      if (!trimmed) {
+        return 'Name is required.'
+      }
+      if (trimmed.length < 2) {
+        return 'Name must be at least 2 characters.'
+      }
+    }
+    if (name === 'email' && !trimmed) {
+      return 'Email is required.'
+    }
+    if (name === 'email' && trimmed && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      return 'Please enter a valid email address.'
+    }
+    if (name === 'country' && !trimmed) {
+      return 'Country is required.'
+    }
+    return ''
+  }
+
+  const validateForm = () => {
+    const nextErrors = {
+      name: validateField('name', customerForm.name),
+      email: validateField('email', customerForm.email),
+      country: validateField('country', customerForm.country),
+    }
+    const filtered = Object.fromEntries(Object.entries(nextErrors).filter(([, value]) => value))
+    setErrors(filtered)
+    return Object.keys(filtered).length === 0
+  }
+
   const submitCustomer = async (event: React.FormEvent) => {
     event.preventDefault()
-    if (!customerForm.name.trim() || !customerForm.email.trim() || !customerForm.country.trim()) {
-      setInlineError('Name, email and country are required.')
+    if (!validateForm()) {
+      setInlineError('Please correct the highlighted fields.')
       return
     }
 
     setSubmitting(true)
     setInlineError('')
-    setEmailError('')
 
     try {
       const created = await registerCustomer({
@@ -80,7 +112,7 @@ const CheckoutPage: React.FC = () => {
 
       if (Array.isArray(detail)) {
         const validationMessage = detail[0]?.msg ?? 'Validation error'
-        setEmailError(validationMessage.replace('value is not a valid email address: ', ''))
+        setErrors((prev) => ({ ...prev, email: validationMessage.replace('value is not a valid email address: ', '') }))
         return
       }
 
@@ -119,12 +151,16 @@ const CheckoutPage: React.FC = () => {
       navigate(`/order-confirmation/${order.id}`, {
         state: {
           orderId: order.id,
-          totalAmount: order.total_amount,
-          items: order.items,
+          totalAmount: subtotal,
           customerName: customerForm.name,
-          order,
-          cartSummary,
+          items: items.map((i) => ({
+            name: i.product.name,
+            quantity: i.quantity,
+            unitPrice: i.product.price,
+            lineTotal: i.product.price * i.quantity,
+          })),
         },
+        replace: true,
       })
     } catch (unknownError) {
       const err = unknownError as { status?: number; message?: string }
@@ -153,56 +189,109 @@ const CheckoutPage: React.FC = () => {
 
   return (
     <PageWrapper>
-      <main className="pt-28 pb-16 min-h-screen px-4">
+      <main className="pt-24 sm:pt-28 pb-16 min-h-screen px-4">
         <section className="max-w-4xl mx-auto">
           <p className="font-accent text-brand-gold/70 text-xs tracking-[0.35em] uppercase text-center mb-3">
             Checkout
           </p>
-          <h1 className="font-display text-5xl text-center gold-gradient-text mb-4">Complete Your Order</h1>
+          <h1 className="font-display text-4xl sm:text-5xl text-center gold-gradient-text mb-3">Complete Your Order</h1>
+          <p className="font-body text-brand-cream/45 text-xs sm:text-sm text-center max-w-md mx-auto mb-6">
+            Secure your selections in two simple steps.
+          </p>
           <GoldDivider className="max-w-xs mx-auto" />
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 mt-8">
-            <section className="border border-brand-gold/20 bg-brand-black/50 p-5">
+            <section className="border border-brand-gold/20 bg-brand-black/50 p-4 sm:p-5">
               {step === 1 ? (
                 <form className="space-y-3" onSubmit={submitCustomer}>
                   <h2 className="font-accent text-brand-gold tracking-widest uppercase text-sm mb-2">
                     Step 1: Customer Details
                   </h2>
                   <input
+                    type="text"
+                    name="name"
+                    required
+                    minLength={2}
+                    autoComplete="name"
                     value={customerForm.name}
                     onChange={(event) =>
-                      setCustomerForm((prev) => ({ ...prev, name: event.target.value }))
+                      {
+                        setCustomerForm((prev) => ({ ...prev, name: event.target.value }))
+                        setErrors((prev) => ({ ...prev, name: '' }))
+                        setInlineError('')
+                      }
                     }
-                    className="w-full bg-brand-black border border-brand-gold/30 p-2"
+                    onBlur={(event) =>
+                      setErrors((prev) => ({ ...prev, name: validateField('name', event.target.value) }))
+                    }
+                    className={`w-full bg-brand-black border p-2.5 min-h-[44px] ${
+                      errors.name ? 'border-red-400/70' : 'border-brand-gold/30'
+                    }`}
                     placeholder="Name*"
+                    aria-invalid={Boolean(errors.name)}
                   />
+                  {errors.name && <p className="text-red-400 text-xs mt-1 font-body">{errors.name}</p>}
                   <input
+                    type="email"
+                    name="email"
+                    required
+                    autoComplete="email"
                     value={customerForm.email}
                     onChange={(event) =>
-                      setCustomerForm((prev) => ({ ...prev, email: event.target.value }))
+                      {
+                        setCustomerForm((prev) => ({ ...prev, email: event.target.value }))
+                        setErrors((prev) => ({ ...prev, email: '' }))
+                        setInlineError('')
+                      }
                     }
-                    className="w-full bg-brand-black border border-brand-gold/30 p-2"
+                    onBlur={(event) =>
+                      setErrors((prev) => ({ ...prev, email: validateField('email', event.target.value) }))
+                    }
+                    className={`w-full bg-brand-black border p-2.5 min-h-[44px] ${
+                      errors.email ? 'border-red-400/70' : 'border-brand-gold/30'
+                    }`}
                     placeholder="Email*"
-                    type="email"
+                    aria-invalid={Boolean(errors.email)}
                   />
-                  {emailError && <p className="text-red-400 text-sm font-body mt-1">{emailError}</p>}
+                  {errors.email && <p className="text-red-400 text-xs mt-1 font-body">{errors.email}</p>}
                   <input
+                    type="tel"
+                    name="phone"
+                    autoComplete="tel"
                     value={customerForm.phone ?? ''}
                     onChange={(event) =>
-                      setCustomerForm((prev) => ({ ...prev, phone: event.target.value }))
+                      {
+                        setCustomerForm((prev) => ({ ...prev, phone: event.target.value }))
+                        setInlineError('')
+                      }
                     }
-                    className="w-full bg-brand-black border border-brand-gold/30 p-2"
-                    placeholder="Phone"
+                    className="w-full bg-brand-black border border-brand-gold/30 p-2.5 min-h-[44px]"
+                    placeholder="Phone (optional)"
                   />
                   <input
+                    type="text"
+                    name="country"
+                    required
+                    autoComplete="country-name"
                     value={customerForm.country}
                     onChange={(event) =>
-                      setCustomerForm((prev) => ({ ...prev, country: event.target.value }))
+                      {
+                        setCustomerForm((prev) => ({ ...prev, country: event.target.value }))
+                        setErrors((prev) => ({ ...prev, country: '' }))
+                        setInlineError('')
+                      }
                     }
-                    className="w-full bg-brand-black border border-brand-gold/30 p-2"
+                    onBlur={(event) =>
+                      setErrors((prev) => ({ ...prev, country: validateField('country', event.target.value) }))
+                    }
+                    className={`w-full bg-brand-black border p-2.5 min-h-[44px] ${
+                      errors.country ? 'border-red-400/70' : 'border-brand-gold/30'
+                    }`}
                     placeholder="Country*"
+                    aria-invalid={Boolean(errors.country)}
                   />
-                  {inlineError && <p className="text-sm text-red-400">{inlineError}</p>}
+                  {errors.country && <p className="text-red-400 text-xs mt-1 font-body">{errors.country}</p>}
+                  {inlineError && <p className="text-xs sm:text-sm text-red-400">{inlineError}</p>}
                   <Button type="submit" disabled={submitting} className="w-full">
                     {submitting ? 'Saving...' : 'Continue to Review'}
                   </Button>
@@ -234,7 +323,7 @@ const CheckoutPage: React.FC = () => {
                     <span className="font-accent text-brand-gold">{formatPrice(subtotal)}</span>
                   </div>
 
-                  {inlineError && <p className="text-sm text-red-400 mt-3">{inlineError}</p>}
+                  {inlineError && <p className="text-xs sm:text-sm text-red-400 mt-3">{inlineError}</p>}
 
                   <div className="mt-4 flex gap-2">
                     <Button variant="ghost" onClick={() => setStep(1)} disabled={submitting}>
@@ -248,6 +337,7 @@ const CheckoutPage: React.FC = () => {
               )}
             </section>
 
+            {step === 1 && (
             <aside className="border border-brand-gold/20 bg-brand-black/50 p-5 h-fit">
               <h3 className="font-accent text-brand-gold tracking-widest uppercase text-sm mb-3">
                 Order Summary
@@ -265,6 +355,7 @@ const CheckoutPage: React.FC = () => {
                 <span>{formatPrice(subtotal)}</span>
               </div>
             </aside>
+            )}
           </div>
         </section>
       </main>

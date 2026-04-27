@@ -7,6 +7,7 @@ import { SEO } from '@/components/SEO'
 
 const STORY_SECTIONS = [
   {
+    id: 'origin',
     eyebrow: 'Our Origin',
     heading: 'Rooted in Kolkata',
     body: "Aura Jewellery HQ was born on the narrow lanes of Kolkata's jewellery quarter, where three generations of our family have shaped gold into stories. What began as a single workshop bench has grown into a studio that blends heritage craftsmanship with contemporary design.",
@@ -15,6 +16,7 @@ const STORY_SECTIONS = [
     reverse: false,
   },
   {
+    id: 'craftsmanship',
     eyebrow: 'The Craft',
     heading: 'Made by Hand, Made to Last',
     body: 'Every piece that leaves our workshop passes through the hands of artisans trained in techniques passed down for centuries — filigree, granulation, hand-engraving. We use ethically sourced gold and gemstones, and every detail is finished by hand. No assembly lines, no shortcuts.',
@@ -23,6 +25,7 @@ const STORY_SECTIONS = [
     reverse: true,
   },
   {
+    id: 'sustainability',
     eyebrow: 'Our Promise',
     heading: 'Jewellery That Tells Your Story',
     body: "We believe jewellery is more than adornment — it's memory, identity, love. Each piece is designed to be worn every day and passed down through generations. Whether you're choosing a gift or treating yourself, we're here to help you find the piece that speaks to you.",
@@ -77,6 +80,7 @@ const AboutPage: React.FC = () => {
           {STORY_SECTIONS.map((section, i) => (
             <motion.section
               key={section.eyebrow}
+              id={section.id}
               className={`flex flex-col ${section.reverse ? 'lg:flex-row-reverse' : 'lg:flex-row'} items-center gap-12 lg:gap-20`}
               initial={{ opacity: 0, y: 32 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -94,6 +98,22 @@ const AboutPage: React.FC = () => {
               </div>
             </motion.section>
           ))}
+
+          <section id="careers" className="border border-brand-gold/20 bg-brand-black/40 p-6 md:p-8">
+            <p className="font-accent text-brand-gold text-xs tracking-[0.35em] uppercase mb-3">Careers</p>
+            <h2 className="font-display text-3xl md:text-4xl font-light text-brand-cream mb-3">Join Our Atelier</h2>
+            <p className="font-body text-brand-cream/65 text-sm leading-relaxed">
+              We are not actively hiring right now. If you are a designer, artisan, or storyteller passionate about handcrafted jewellery, write to us at careers@aurajewelleryhq.com and we will reach out when roles open.
+            </p>
+          </section>
+
+          <section id="press" className="border border-brand-gold/20 bg-brand-black/40 p-6 md:p-8">
+            <p className="font-accent text-brand-gold text-xs tracking-[0.35em] uppercase mb-3">Press</p>
+            <h2 className="font-display text-3xl md:text-4xl font-light text-brand-cream mb-3">Media & Enquiries</h2>
+            <p className="font-body text-brand-cream/65 text-sm leading-relaxed">
+              For media kits, founder interviews, and brand assets, please contact press@aurajewelleryhq.com. We are preparing a full press room and will publish updates soon.
+            </p>
+          </section>
         </div>
 
         <CTAStrip />

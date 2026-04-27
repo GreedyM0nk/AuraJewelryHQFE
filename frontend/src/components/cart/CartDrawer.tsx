@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ShoppingBag } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useCart } from '@/hooks/useCart'
 import { CartItem } from './CartItem'
 import { GoldDivider } from '@/components/ui/GoldDivider'
+import { Toast } from '@/components/ui/Toast'
 
 const formatPrice = (price: number) =>
   new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(
@@ -12,9 +13,12 @@ const formatPrice = (price: number) =>
   )
 
 export const CartDrawer: React.FC = () => {
-  const { isOpen, toggleCart, items, subtotal, clearCart } = useCart()
+  const { isOpen, toggleCart, items, subtotal, clearCart, lastAddedAt, lastAddedProductName } = useCart()
   const navigate = useNavigate()
   const closeRef = useRef<HTMLButtonElement>(null)
+  const prevOpenRef = useRef(false)
+  const seenAddedAtRef = useRef(0)
+  const [showAddedToast, setShowAddedToast] = useState(false)
 
   // Focus trap — focus close button when drawer opens
   useEffect(() => {
@@ -32,10 +36,25 @@ export const CartDrawer: React.FC = () => {
     return () => window.removeEventListener('keydown', onKey)
   }, [isOpen, toggleCart])
 
+  useEffect(() => {
+    const openedNow = !prevOpenRef.current && isOpen
+    if (openedNow && lastAddedAt > seenAddedAtRef.current && lastAddedProductName) {
+      seenAddedAtRef.current = lastAddedAt
+      setShowAddedToast(true)
+    }
+    prevOpenRef.current = isOpen
+  }, [isOpen, lastAddedAt, lastAddedProductName])
+
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
+    <>
+      <Toast
+        visible={showAddedToast}
+        message={lastAddedProductName ? `${lastAddedProductName} added to cart!` : 'Added to cart!'}
+        onHide={() => setShowAddedToast(false)}
+      />
+      <AnimatePresence>
+        {isOpen && (
+          <>
           {/* Overlay */}
           <motion.div
             key="overlay"
@@ -143,8 +162,9 @@ export const CartDrawer: React.FC = () => {
               </div>
             )}
           </motion.aside>
-        </>
-      )}
-    </AnimatePresence>
+          </>
+        )}
+      </AnimatePresence>
+    </>
   )
 }

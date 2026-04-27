@@ -1,6 +1,7 @@
 import React from 'react'
 import { Minus, Plus, Trash2 } from 'lucide-react'
 import { useCart } from '@/hooks/useCart'
+import { useCartStore } from '@/store/cartStore'
 import type { CartItem as CartItemType } from '@/types'
 
 interface CartItemProps {
@@ -15,6 +16,27 @@ const formatPrice = (price: number) =>
 export const CartItem: React.FC<CartItemProps> = ({ item }) => {
   const { updateQuantity, removeItem } = useCart()
   const { product, quantity } = item
+
+  const handleIncrease = () => {
+    const currentItems = useCartStore.getState().items
+    const current = currentItems.find((i) => i.product.id === product.id)
+    if (!current) {
+      return
+    }
+    const maxQty = product.stock_quantity ?? Infinity
+    if (current.quantity < maxQty) {
+      updateQuantity(product.id, current.quantity + 1)
+    }
+  }
+
+  const handleDecrease = () => {
+    const currentItems = useCartStore.getState().items
+    const current = currentItems.find((i) => i.product.id === product.id)
+    if (!current) {
+      return
+    }
+    updateQuantity(product.id, current.quantity - 1)
+  }
 
   return (
     <article className="flex gap-4 py-4 border-b border-brand-gold/10" aria-label={product.name}>
@@ -48,15 +70,16 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
           <button
             aria-label="Decrease quantity"
             className="w-6 h-6 border border-brand-gold/30 text-brand-cream/70 hover:border-brand-gold hover:text-brand-gold flex items-center justify-center transition-colors"
-            onClick={() => updateQuantity(product.id, quantity - 1)}
+            onClick={handleDecrease}
           >
             <Minus size={10} />
           </button>
           <span className="font-body text-brand-cream text-sm w-6 text-center">{quantity}</span>
           <button
             aria-label="Increase quantity"
-            className="w-6 h-6 border border-brand-gold/30 text-brand-cream/70 hover:border-brand-gold hover:text-brand-gold flex items-center justify-center transition-colors"
-            onClick={() => updateQuantity(product.id, quantity + 1)}
+            className="w-6 h-6 border border-brand-gold/30 text-brand-cream/70 hover:border-brand-gold hover:text-brand-gold flex items-center justify-center transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            onClick={handleIncrease}
+            disabled={quantity >= (product.stock_quantity ?? Infinity)}
           >
             <Plus size={10} />
           </button>

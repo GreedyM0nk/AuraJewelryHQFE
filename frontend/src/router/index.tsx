@@ -16,6 +16,7 @@ const TermsPage = lazy(() => import('@/pages/TermsPage'))
 const CheckoutPage = lazy(() => import('@/pages/CheckoutPage'))
 const OrderConfirmationPage = lazy(() => import('@/pages/OrderConfirmationPage'))
 const ProductDetailPage = lazy(() => import('@/pages/ProductDetailPage'))
+const WishlistPage = lazy(() => import('@/pages/WishlistPage'))
 const AdminLayout = lazy(() => import('@/pages/admin/AdminLayout'))
 const AdminProductsPage = lazy(() => import('@/pages/admin/AdminProductsPage'))
 const AdminCategoriesPage = lazy(() => import('@/pages/admin/AdminCategoriesPage'))
@@ -31,6 +32,7 @@ const AnimatedRoutes: React.FC = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/shop" element={<ProductsPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/wishlist" element={<WishlistPage />} />
         <Route path="/order-confirmation/:orderId" element={<OrderConfirmationPage />} />
         <Route path="/products/:productId" element={<ProductDetailPage />} />
         <Route path="/collections" element={<CollectionsPage />} />
