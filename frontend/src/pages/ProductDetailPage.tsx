@@ -48,7 +48,7 @@ const ProductDetailPage: React.FC = () => {
         } else {
           setRelatedProducts([])
         }
-      } catch (unknownError) {
+      } catch {
         setError('Product not found')
         setProduct(null)
         setRelatedProducts([])
