@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { PageWrapper } from '@/components/layout/PageWrapper'
 import { Button } from '@/components/ui/Button'
 import { GoldDivider } from '@/components/ui/GoldDivider'
+import { Spinner } from '@/components/ui/Spinner'
 import { useCart } from '@/hooks/useCart'
 import { registerCustomer } from '@/api/customers'
 import { createOrder } from '@/api/orders'
@@ -329,8 +330,15 @@ const CheckoutPage: React.FC = () => {
                     <Button variant="ghost" onClick={() => setStep(1)} disabled={submitting}>
                       Back
                     </Button>
-                    <Button onClick={placeOrder} disabled={submitting}>
-                      {submitting ? 'Placing Order...' : 'Place Order'}
+                    <Button onClick={placeOrder} disabled={submitting} className="disabled:opacity-60 disabled:cursor-not-allowed">
+                      {submitting ? (
+                        <span className="flex items-center gap-2">
+                          <Spinner size="sm" />
+                          PLACING ORDER...
+                        </span>
+                      ) : (
+                        'Place Order'
+                      )}
                     </Button>
                   </div>
                 </div>

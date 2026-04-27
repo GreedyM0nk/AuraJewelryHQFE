@@ -72,6 +72,9 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
   return (
     <div className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm" onClick={onClose} role="presentation">
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Search products"
         className="max-w-2xl mx-auto mt-24 border border-brand-gold/20 bg-brand-black p-4"
         onClick={(event) => event.stopPropagation()}
       >

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, Heart } from 'lucide-react'
 import { PageWrapper } from '@/components/layout/PageWrapper'
+import { SEO } from '@/components/SEO'
 import { Button } from '@/components/ui/Button'
 import { Spinner } from '@/components/ui/Spinner'
 import { GoldDivider } from '@/components/ui/GoldDivider'
@@ -82,7 +83,7 @@ const ProductDetailPage: React.FC = () => {
                   <li className="text-brand-gold/30">/</li>
                   <li>
                     <Link
-                      to={product.category?.name ? `/shop?category=${product.category.name.toLowerCase()}` : '/shop'}
+                      to={product.category_id ? `/shop?category=${product.category_id}` : '/shop'}
                       className="hover:text-brand-gold transition-colors"
                     >
                       {product.category.name}
@@ -94,6 +95,13 @@ const ProductDetailPage: React.FC = () => {
               <li className="text-brand-cream/70 truncate max-w-[120px]">{product?.name}</li>
             </ol>
           </nav>
+
+          {product && (
+            <SEO
+              title={`${product.name} — ${product.category?.name ?? 'Jewellery'}`}
+              description={product.description ?? `Handcrafted ${product.name} — ${product.sku}. ₹${product.price.toLocaleString('en-IN')}. Limited stock available.`}
+            />
+          )}
 
           {loading ? (
             <div className="py-20 flex justify-center">
@@ -129,7 +137,6 @@ const ProductDetailPage: React.FC = () => {
                 <div className="mt-5 space-y-2 text-sm text-brand-cream/80">
                   <p>SKU: <span className="text-brand-gold">{product.sku}</span></p>
                   <p>Category: {product.category?.name ?? '-'}</p>
-                  <p>Stock: {product.stock_quantity}</p>
                   <div className="flex items-center gap-3 mt-2">
                     {product.stock_quantity === 0 ? (
                       <span className="bg-red-500/20 text-red-300 border border-red-400/40 px-3 py-1 text-xs tracking-widest uppercase">
@@ -145,6 +152,12 @@ const ProductDetailPage: React.FC = () => {
                       </span>
                     )}
                   </div>
+                  {product.stock_quantity > 0 && product.stock_quantity <= 3 && (
+                    <p className="font-body text-brand-cream/50 text-xs mt-2 italic">
+                      Only {product.stock_quantity} piece{product.stock_quantity > 1 ? 's' : ''} remain in this batch.
+                      Once sold, this design will be reworked for the next collection.
+                    </p>
+                  )}
                 </div>
 
                 <p className="font-accent text-brand-gold text-2xl mt-5">{formatPrice(product.price)}</p>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import { CheckCircle2 } from 'lucide-react'
 import { PageWrapper } from '@/components/layout/PageWrapper'
 import { Button } from '@/components/ui/Button'
@@ -82,6 +83,10 @@ const OrderConfirmationPage: React.FC = () => {
 
   return (
     <PageWrapper>
+      <Helmet>
+        <title>Order Confirmed | Aura Jewellery HQ</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       <main className="pt-28 pb-16 min-h-screen px-4">
         <section className="max-w-3xl mx-auto border border-brand-gold/20 bg-brand-black/50 p-6">
           <div className="flex justify-center mb-3">
@@ -142,6 +147,28 @@ const OrderConfirmationPage: React.FC = () => {
             {fetchAttempted && !resolvedOrder && !state?.order && (
               <p className="text-brand-cream/70 mt-3">Your order has been placed.</p>
             )}
+
+            <div className="mt-8 border-t border-brand-gold/10 pt-6">
+              <p className="font-accent text-brand-gold/60 text-xs tracking-widest uppercase mb-4">Order Status</p>
+              <div className="flex items-center gap-0">
+                {(['Order Placed', 'Confirmed', 'Shipped', 'Delivered'] as const).map((step, i) => (
+                  <React.Fragment key={step}>
+                    <div className="flex flex-col items-center gap-1">
+                      <div className={`w-3 h-3 rounded-full border ${i === 0 ? 'bg-brand-gold border-brand-gold' : 'border-brand-cream/20 bg-transparent'}`} />
+                      <span className={`font-body text-xs whitespace-nowrap ${i === 0 ? 'text-brand-gold' : 'text-brand-cream/30'}`}>
+                        {step}
+                      </span>
+                    </div>
+                    {i < 3 && (
+                      <div className="flex-1 h-px mx-1 mb-4 bg-brand-cream/10" />
+                    )}
+                  </React.Fragment>
+                ))}
+              </div>
+              <p className="font-body text-brand-cream/50 text-xs mt-4">
+                Estimated delivery: <span className="text-brand-cream/80">5–7 business days</span>
+              </p>
+            </div>
           </div>
 
           <div className="mt-6 flex justify-center">

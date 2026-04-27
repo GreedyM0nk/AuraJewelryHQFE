@@ -89,14 +89,14 @@ const CollectionsPage: React.FC = () => {
             </section>
           )}
 
-          <div className="flex flex-wrap items-center justify-center gap-2 mb-12" role="tablist">
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-1 flex-nowrap mb-12" role="tablist">
             {filterTabs.map((tab) => (
               <button
                 key={tab.id ?? 'all'}
                 role="tab"
                 aria-selected={activeCategory === tab.id}
                 onClick={() => setActiveCategory(tab.id)}
-                className={`font-accent text-xs tracking-widest uppercase px-5 py-2 border transition-all duration-200 ${
+                className={`font-accent text-xs tracking-widest uppercase px-5 py-2 border transition-all duration-200 flex-shrink-0 ${
                   activeCategory === tab.id
                     ? 'bg-brand-gold text-brand-black border-brand-gold'
                     : 'bg-transparent text-brand-cream/60 border-brand-cream/20 hover:border-brand-gold hover:text-brand-gold'
@@ -146,14 +146,21 @@ const CollectionsPage: React.FC = () => {
             </motion.div>
           )}
 
-          {activeCategory && (
-            <div className="flex justify-center mt-12">
+          {activeCategory !== undefined && (
+            <div className="flex items-center justify-center gap-4 mt-12">
               <Link
                 to="/shop"
+                onClick={() => setActiveCategory(undefined)}
                 className="font-accent text-xs tracking-widest uppercase px-8 py-3 border border-brand-gold/40 text-brand-gold hover:bg-brand-gold hover:text-brand-black transition-all duration-200"
               >
                 Browse All Pieces
               </Link>
+              <button
+                onClick={() => setActiveCategory(undefined)}
+                className="font-body text-brand-cream/40 text-xs hover:text-brand-gold transition-colors"
+              >
+                ✕ Clear filter
+              </button>
             </div>
           )}
         </div>

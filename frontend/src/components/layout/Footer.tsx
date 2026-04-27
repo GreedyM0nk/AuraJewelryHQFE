@@ -4,6 +4,14 @@ import { Instagram, MessageCircle, BarChart2, ExternalLink } from 'lucide-react'
 import { GoldDivider } from '@/components/ui/GoldDivider'
 import logo from '@/assets/logo.png'
 
+const SHOP_LINKS = [
+  { label: 'Charms',       to: '/shop?category=11111111-1111-1111-1111-111111111001' },
+  { label: 'Bracelets',    to: '/shop?category=11111111-1111-1111-1111-111111111002' },
+  { label: 'Necklaces',    to: '/shop?category=11111111-1111-1111-1111-111111111003' },
+  { label: 'Rings',        to: '/shop?category=11111111-1111-1111-1111-111111111004' },
+  { label: 'New Arrivals', to: '/shop' },
+]
+
 const COMPANY_LINKS = [
   { label: 'Our Story', to: '/about' },
   { label: 'Craftsmanship', to: '/about#craftsmanship' },
@@ -56,8 +64,8 @@ export const Footer: React.FC = () => {
           <div>
             <h3 className="font-accent text-brand-gold text-xs tracking-widest uppercase mb-5">Shop</h3>
             <ul className="space-y-3">
-              {['Charms', 'Bracelets', 'Necklaces', 'Rings', 'New Arrivals'].map((item) => (
-                <li key={item}><Link to="/shop" className="font-body text-brand-cream/60 text-sm hover:text-brand-gold transition-colors duration-200">{item}</Link></li>
+              {SHOP_LINKS.map((item) => (
+                <li key={item.label}><Link to={item.to} className="font-body text-brand-cream/60 text-sm hover:text-brand-gold transition-colors duration-200">{item.label}</Link></li>
               ))}
             </ul>
           </div>
@@ -81,42 +89,6 @@ export const Footer: React.FC = () => {
               <li><a href="tel:+919000000000" className="hover:text-brand-gold transition-colors">+91 90000 00000</a></li>
               <li className="pt-2">Mon - Sat, 10 AM - 7 PM IST</li>
             </ul>
-          </div>
-
-          {/* Corporate Transparency */}
-          <div>
-            <h3 className="font-accent text-brand-gold text-xs tracking-widest uppercase mb-5">Corporate Transparency</h3>
-            <a
-              href="/investor-relations"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex items-start gap-3 mb-6 p-3 border border-brand-gold/15 hover:border-brand-gold/40 transition-all duration-300 rounded-sm"
-              aria-label="Open Live Performance Dashboard"
-            >
-              <div className="mt-0.5 text-brand-gold/70 group-hover:text-brand-gold transition-colors duration-200 shrink-0">
-                <BarChart2 size={16} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5">
-                  <span className="font-accent text-brand-cream/80 text-xs tracking-wider group-hover:text-brand-gold transition-colors duration-200 uppercase">Investor Relations</span>
-                  <ExternalLink size={10} className="text-brand-cream/30 group-hover:text-brand-gold/60 transition-colors duration-200 shrink-0" aria-hidden="true" />
-                </div>
-                <p className="font-body text-brand-cream/40 text-xs mt-0.5 leading-relaxed">Live performance dashboard</p>
-              </div>
-            </a>
-            <ul className="space-y-3">
-              {TRANSPARENCY_LINKS.map((item) => (
-                <li key={item.label}>
-                  <a href={item.href} target="_blank" rel="noopener noreferrer" className="group flex flex-col gap-0.5">
-                    <span className="font-body text-brand-cream/60 text-sm group-hover:text-brand-gold transition-colors duration-200">{item.label}</span>
-                    <span className="font-body text-brand-cream/30 text-xs">{item.description}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-            <p className="font-body text-brand-cream/25 text-xs mt-6 leading-relaxed italic">
-              Financial disclosures in accordance with applicable Indian corporate governance standards.
-            </p>
           </div>
 
           {/* Corporate Transparency */}

@@ -18,11 +18,8 @@ const fadeIn = (delay: number) => ({
 export const HeroSection: React.FC = () => {
   const shouldReduce = useReducedMotion()
   const motionProps = (delay: number) => (shouldReduce ? fadeIn(delay) : fadeUp(delay))
-  const handleOurStoryClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    if (window.location.pathname === '/') {
-      event.preventDefault()
-      document.getElementById('about')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }
+  const handleOurStoryClick = () => {
+    document.getElementById('about')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   return (
@@ -94,7 +91,7 @@ export const HeroSection: React.FC = () => {
           <Button variant="primary" size="lg" as={Link} to="/shop">
             Explore Collection
           </Button>
-          <Button variant="ghost" size="lg" as={Link} to="/#about" onClick={handleOurStoryClick}>
+          <Button variant="ghost" size="lg" onClick={handleOurStoryClick}>
             Our Story
           </Button>
         </motion.div>
