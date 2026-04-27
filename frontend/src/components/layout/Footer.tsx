@@ -40,42 +40,15 @@ export const Footer: React.FC = () => {
           <div className="lg:col-span-1">
             <div className="flex flex-col items-start gap-3 mb-4">
               <img src={logo} alt="Aura Jewellery HQ" className="h-20 w-20 object-contain mx-auto" width={80} height={80} />
-              <p className="font-accent tracking-[0.4em] text-brand-gold text-sm mt-3 uppercase">
-                Aura Jewellery
-              </p>
+              <p className="font-accent tracking-[0.4em] text-brand-gold text-sm mt-3 uppercase">Aura Jewellery</p>
             </div>
             <p className="font-body text-brand-cream/60 text-sm leading-relaxed mb-6">
-              Handcrafted jewellery rooted in Kolkata's goldsmithing heritage. Every piece tells a story of
-              artisanship, love, and legacy.
+              Handcrafted jewellery rooted in Kolkata's goldsmithing heritage. Every piece tells a story of artisanship, love, and legacy.
             </p>
             <div className="flex items-center gap-4">
-              <a
-                href="https://www.instagram.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-                className="text-brand-cream/50 hover:text-brand-gold transition-colors duration-200"
-              >
-                <Instagram size={18} />
-              </a>
-              <a
-                href="https://www.pinterest.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Pinterest"
-                className="text-brand-cream/50 hover:text-brand-gold transition-colors duration-200"
-              >
-                <PinterestIcon />
-              </a>
-              <a
-                href="https://wa.me/919000000000?text=Hi!%20I%27m%20interested%20in%20Aura%20Jewellery"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="WhatsApp"
-                className="text-brand-cream/50 hover:text-brand-gold transition-colors duration-200"
-              >
-                <MessageCircle size={18} />
-              </a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-brand-cream/50 hover:text-brand-gold transition-colors duration-200"><Instagram size={18} /></a>
+              <a href="https://pinterest.com" target="_blank" rel="noopener noreferrer" aria-label="Pinterest" className="text-brand-cream/50 hover:text-brand-gold transition-colors duration-200"><PinterestIcon /></a>
+              <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-brand-cream/50 hover:text-brand-gold transition-colors duration-200"><MessageCircle size={18} /></a>
             </div>
           </div>
 
@@ -84,14 +57,7 @@ export const Footer: React.FC = () => {
             <h3 className="font-accent text-brand-gold text-xs tracking-widest uppercase mb-5">Shop</h3>
             <ul className="space-y-3">
               {['Charms', 'Bracelets', 'Necklaces', 'Rings', 'New Arrivals'].map((item) => (
-                <li key={item}>
-                  <Link
-                    to="/shop"
-                    className="font-body text-brand-cream/60 text-sm hover:text-brand-gold transition-colors duration-200"
-                  >
-                    {item}
-                  </Link>
-                </li>
+                <li key={item}><Link to="/shop" className="font-body text-brand-cream/60 text-sm hover:text-brand-gold transition-colors duration-200">{item}</Link></li>
               ))}
             </ul>
           </div>
@@ -101,14 +67,7 @@ export const Footer: React.FC = () => {
             <h3 className="font-accent text-brand-gold text-xs tracking-widest uppercase mb-5">Company</h3>
             <ul className="space-y-3">
               {COMPANY_LINKS.map((item) => (
-                <li key={item.label}>
-                  <Link
-                    to={item.to}
-                    className="font-body text-brand-cream/60 text-sm hover:text-brand-gold transition-colors duration-200"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
+                <li key={item.label}><Link to={item.to} className="font-body text-brand-cream/60 text-sm hover:text-brand-gold transition-colors duration-200">{item.label}</Link></li>
               ))}
             </ul>
           </div>
@@ -118,18 +77,46 @@ export const Footer: React.FC = () => {
             <h3 className="font-accent text-brand-gold text-xs tracking-widest uppercase mb-5">Contact</h3>
             <ul className="space-y-3 font-body text-brand-cream/60 text-sm">
               <li>Kolkata, West Bengal, India</li>
-              <li>
-                <a href="mailto:hello@aurajewellery.in" className="hover:text-brand-gold transition-colors">
-                  hello@aurajewellery.in
-                </a>
-              </li>
-              <li>
-                <a href="tel:+919000000000" className="hover:text-brand-gold transition-colors">
-                  +91 90000 00000
-                </a>
-              </li>
-              <li className="pt-2">Mon – Sat, 10 AM – 7 PM IST</li>
+              <li><a href="mailto:hello@aurajewellery.in" className="hover:text-brand-gold transition-colors">hello@aurajewellery.in</a></li>
+              <li><a href="tel:+919000000000" className="hover:text-brand-gold transition-colors">+91 90000 00000</a></li>
+              <li className="pt-2">Mon - Sat, 10 AM - 7 PM IST</li>
             </ul>
+          </div>
+
+          {/* Corporate Transparency */}
+          <div>
+            <h3 className="font-accent text-brand-gold text-xs tracking-widest uppercase mb-5">Corporate Transparency</h3>
+            <a
+              href="/investor-relations"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-start gap-3 mb-6 p-3 border border-brand-gold/15 hover:border-brand-gold/40 transition-all duration-300 rounded-sm"
+              aria-label="Open Live Performance Dashboard"
+            >
+              <div className="mt-0.5 text-brand-gold/70 group-hover:text-brand-gold transition-colors duration-200 shrink-0">
+                <BarChart2 size={16} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-accent text-brand-cream/80 text-xs tracking-wider group-hover:text-brand-gold transition-colors duration-200 uppercase">Investor Relations</span>
+                  <ExternalLink size={10} className="text-brand-cream/30 group-hover:text-brand-gold/60 transition-colors duration-200 shrink-0" aria-hidden="true" />
+                </div>
+                <p className="font-body text-brand-cream/40 text-xs mt-0.5 leading-relaxed">Live performance dashboard</p>
+              </div>
+            </a>
+            <ul className="space-y-3">
+              {TRANSPARENCY_LINKS.map((item) => (
+                <li key={item.label}>
+                  <a href={item.href} target="_blank" rel="noopener noreferrer" className="group flex flex-col gap-0.5">
+                    <span className="font-body text-brand-cream/60 text-sm group-hover:text-brand-gold transition-colors duration-200">{item.label}</span>
+                    <span className="font-body text-brand-cream/30 text-xs">{item.description}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <p className="font-body text-brand-cream/25 text-xs mt-6 leading-relaxed italic">
+              Financial disclosures in accordance with applicable Indian corporate governance standards.
+            </p>
           </div>
 
           {/* Corporate Transparency */}
@@ -191,12 +178,8 @@ export const Footer: React.FC = () => {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-brand-cream/40 text-xs font-body">
           <p>© {new Date().getFullYear()} Aura Jewellery HQ. All rights reserved.</p>
           <div className="flex items-center gap-6">
-            <Link to="/privacy-policy" className="hover:text-brand-gold transition-colors">
-              Privacy Policy
-            </Link>
-            <Link to="/terms" className="hover:text-brand-gold transition-colors">
-              Terms of Service
-            </Link>
+            <Link to="/privacy-policy" className="hover:text-brand-gold transition-colors">Privacy Policy</Link>
+            <Link to="/terms" className="hover:text-brand-gold transition-colors">Terms of Service</Link>
           </div>
         </div>
       </div>
