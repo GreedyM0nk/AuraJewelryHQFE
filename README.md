@@ -248,7 +248,7 @@ src/
 │   ├── axiosClient.ts       # Axios instance with interceptors
 │   ├── products.ts          # getProducts(), getProduct(), createProduct(), updateProduct(), deleteProduct()
 │   ├── categories.ts        # getCategories(), createCategory(), deleteCategory()
-│   ├── customers.ts         # registerCustomer(), listCustomers(), deleteCustomer()
+│   ├── customers.ts         # registerCustomer(), lookupCustomerByEmail(), listCustomers(), deleteCustomer()
 │   └── orders.ts            # createOrder(), getOrder(), listOrders(), updateOrderStatus(), deleteOrder()
 ├── components/
 │   ├── layout/
@@ -260,6 +260,7 @@ src/
 │   │   ├── Badge.tsx        # gold / danger / neutral
 │   │   ├── GoldDivider.tsx  # decorative rule with diamond accent
 │   │   ├── Spinner.tsx      # Loading indicator
+│   │   ├── CountrySelect.tsx# Searchable country picker (flag + dial code)
 │   │   └── ProductCardSkeleton.tsx # Reusable product loading skeleton
 │   ├── search/
 │   │   └── SearchModal.tsx  # Debounced product search modal
@@ -278,7 +279,10 @@ src/
 │   └── useCart.ts           # Zustand cart selectors
 ├── store/
 │   ├── cartStore.ts         # Zustand cart store (persisted to localStorage)
-│   └── wishlistStore.ts     # Zustand wishlist store (persisted to localStorage)
+│   ├── wishlistStore.ts     # Zustand wishlist store (persisted to localStorage)
+│   └── customerStore.ts     # Customer session store (persisted to localStorage)
+├── data/
+│   └── countries.ts         # Country metadata used by CountrySelect
 ├── types/
 │   └── index.ts             # Product, Category, CartItem, Customer, Order, OrderItem interfaces
 ├── pages/
@@ -287,6 +291,9 @@ src/
 │   ├── ProductDetailPage.tsx# /products/:productId — image, SKU, stock, Add to Cart
 │   ├── WishlistPage.tsx     # /wishlist — saved favourites grid
 │   ├── CheckoutPage.tsx     # /checkout — customer registration + order placement (2-step)
+│   ├── RegisterPage.tsx     # /register — customer registration
+│   ├── LoginPage.tsx        # /login — customer email lookup sign-in
+│   ├── AccountPage.tsx      # /account — profile + order history
 │   ├── OrderConfirmationPage.tsx # /order-confirmation/:orderId — success screen
 │   ├── PrivacyPolicyPage.tsx # /privacy-policy
 │   ├── TermsPage.tsx        # /terms
@@ -318,6 +325,9 @@ src/
 | `/investor-relations` | Investor relations overview (ESG + annual highlights) | — |
 | `/products/:productId` | Product detail — image, SKU, stock, Add to Cart | — |
 | `/checkout` | Two-step checkout (customer info → order review) | — |
+| `/register` | Customer registration | — |
+| `/login` | Email-based sign in | — |
+| `/account` | Customer profile and order history | Customer session |
 | `/order-confirmation/:orderId` | Order success screen | — |
 | `/privacy-policy` | Privacy policy page | — |
 | `/terms` | Terms of service page | — |
@@ -335,6 +345,7 @@ src/
 ## Backend Additions
 
 - `POST /api/v1/newsletter` endpoint added for newsletter subscriptions
+- `POST /api/v1/customers/lookup` endpoint added for email-based customer login lookup
 - New backend files:
 	- `backend/app/routers/newsletter.py`
 	- `backend/app/schemas/newsletter.py`

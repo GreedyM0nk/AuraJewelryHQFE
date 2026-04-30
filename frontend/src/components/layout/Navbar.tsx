@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ShoppingBag, Search, Menu, X, Heart } from 'lucide-react'
+import { ShoppingBag, Search, Menu, X, Heart, User } from 'lucide-react'
 import { useCart } from '@/hooks/useCart'
 import { useWishlistStore } from '@/store/wishlistStore'
 import { SearchModal } from '@/components/search/SearchModal'
+import { useCustomerStore } from '@/store/customerStore'
 import logo from '@/assets/logo.png'
 
 const NAV_LINKS = [
@@ -20,8 +21,11 @@ export const Navbar: React.FC = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const { totalItems, toggleCart } = useCart()
   const wishlistCount = useWishlistStore((s) => s.items.length)
+  const customer = useCustomerStore((s) => s.customer)
+  const isLoggedIn = useCustomerStore((s) => s.isLoggedIn)()
   const location = useLocation()
   const isHomePage = location.pathname === '/'
+  const mobileNavLinks = [...NAV_LINKS, { to: isLoggedIn ? '/account' : '/login', label: isLoggedIn ? 'MY ACCOUNT' : 'SIGN IN' }]
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
@@ -113,6 +117,17 @@ export const Navbar: React.FC = () => {
                 )}
               </Link>
 
+              <Link
+                to={isLoggedIn ? '/account' : '/login'}
+                aria-label={isLoggedIn ? `Account: ${customer?.name}` : 'Sign in or create account'}
+                className="relative text-brand-cream/70 hover:text-brand-gold transition-colors duration-200 min-h-[48px] min-w-[48px] flex items-center justify-center"
+              >
+                <User size={20} />
+                {isLoggedIn && (
+                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-brand-gold rounded-full" />
+                )}
+              </Link>
+
               <button
                 aria-label={`Cart, ${totalItems} items`}
                 className="relative text-brand-cream/70 hover:text-brand-gold transition-colors duration-200 min-h-[48px] min-w-[48px] flex items-center justify-center flex-shrink-0"
@@ -139,7 +154,6 @@ export const Navbar: React.FC = () => {
                 className="lg:hidden text-brand-cream/70 hover:text-brand-gold transition-colors min-h-[48px] min-w-[48px] flex items-center justify-center"
                 onClick={() => setMobileOpen((o) => !o)}
                 aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-                aria-expanded={mobileOpen}
               >
                 {mobileOpen ? <X size={22} /> : <Menu size={22} />}
               </button>
@@ -160,7 +174,7 @@ export const Navbar: React.FC = () => {
             transition={{ duration: 0.3 }}
           >
             <nav className="flex flex-col items-center gap-6" aria-label="Mobile navigation">
-              {NAV_LINKS.map(({ to, label }) => (
+              {mobileNavLinks.map(({ to, label }) => (
                 <NavLink
                   key={to}
                   to={to}

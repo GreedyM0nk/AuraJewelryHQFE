@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.dependencies import require_admin
 from app.models.customer import Customer
-from app.schemas.customer import CustomerCreate, CustomerOut
+from app.schemas.customer import CustomerCreate, CustomerLookup, CustomerOut
 
 router = APIRouter(tags=['customers'])
 
@@ -28,6 +28,14 @@ async def create_customer(payload: CustomerCreate, db: AsyncSession = Depends(ge
     db.add(customer)
     await db.flush()
     await db.refresh(customer)
+    return customer
+
+
+@router.post('/customers/lookup', response_model=CustomerOut)
+async def lookup_customer(payload: CustomerLookup, db: AsyncSession = Depends(get_db)):
+    customer = await db.scalar(select(Customer).where(Customer.email == payload.email))
+    if customer is None:
+        raise HTTPException(status_code=404, detail='Customer not found')
     return customer
 
 

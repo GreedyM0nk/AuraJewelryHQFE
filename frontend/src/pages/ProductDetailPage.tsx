@@ -24,41 +24,55 @@ const ProductDetailPage: React.FC = () => {
   const [product, setProduct] = useState<Product | null>(null)
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [fetchError, setFetchError] = useState(false)
   const [quantity, setQuantity] = useState(1)
 
   useEffect(() => {
-    const loadProduct = async () => {
-      if (!productId) {
-        setError('Product not found')
-        setLoading(false)
-        return
-      }
+    if (!productId) {
+      setLoading(false)
+      setFetchError(true)
+      return
+    }
 
-      setLoading(true)
-      setError(null)
-      try {
-        const res = await axiosClient.get<Product>(`/products/${productId}`)
+    let cancelled = false
+    setLoading(true)
+    setFetchError(false)
+
+    axiosClient
+      .get<Product>(`/products/${productId}`)
+      .then(async (res) => {
+        if (cancelled) {
+          return
+        }
         const data = res.data
         setProduct(data)
         setQuantity(1)
 
         if (data.category_id) {
           const related = await getProducts({ category_id: data.category_id, limit: 4 })
-          setRelatedProducts(related.filter((item) => item.id !== data.id).slice(0, 4))
+          if (!cancelled) {
+            setRelatedProducts(related.filter((item) => item.id !== data.id).slice(0, 4))
+          }
         } else {
           setRelatedProducts([])
         }
-      } catch {
-        setError('Product not found')
-        setProduct(null)
-        setRelatedProducts([])
-      } finally {
-        setLoading(false)
-      }
-    }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setFetchError(true)
+          setProduct(null)
+          setRelatedProducts([])
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false)
+        }
+      })
 
-    void loadProduct()
+    return () => {
+      cancelled = true
+    }
   }, [productId])
 
   return (
@@ -107,9 +121,12 @@ const ProductDetailPage: React.FC = () => {
             <div className="py-20 flex justify-center">
               <Spinner size="lg" />
             </div>
-          ) : error ? (
+          ) : fetchError ? (
             <div className="text-center py-12">
-              <p className="text-red-400">{error}</p>
+              <p className="text-red-400 mb-3">Product not found</p>
+              <Link to="/shop" className="font-accent text-xs tracking-widest uppercase text-brand-gold hover:underline">
+                Back to Collection
+              </Link>
             </div>
           ) : product ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -137,30 +154,32 @@ const ProductDetailPage: React.FC = () => {
                 <div className="mt-5 space-y-2 text-sm text-brand-cream/80">
                   <p>SKU: <span className="text-brand-gold">{product.sku}</span></p>
                   <p>Category: {product.category?.name ?? '-'}</p>
-                  <div className="flex items-center gap-3 mt-2">
-                    {product.stock_quantity === 0 ? (
-                      <span className="bg-red-500/20 text-red-300 border border-red-400/40 px-3 py-1 text-xs tracking-widest uppercase">
-                        Out of Stock
-                      </span>
-                    ) : product.stock_quantity <= 5 ? (
-                      <span className="bg-brand-gold/10 text-brand-gold border border-brand-gold/30 px-3 py-1 text-xs tracking-widest uppercase">
-                        Only {product.stock_quantity} left
-                      </span>
-                    ) : (
-                      <span className="text-brand-cream/40 font-body text-xs">
-                        In stock ({product.stock_quantity} available)
-                      </span>
-                    )}
-                  </div>
-                  {product.stock_quantity > 0 && product.stock_quantity <= 3 && (
-                    <p className="font-body text-brand-cream/50 text-xs mt-2 italic">
-                      Only {product.stock_quantity} piece{product.stock_quantity > 1 ? 's' : ''} remain in this batch.
-                      Once sold, this design will be reworked for the next collection.
-                    </p>
-                  )}
                 </div>
 
                 <p className="font-accent text-brand-gold text-2xl mt-5">{formatPrice(product.price)}</p>
+
+                <div className="flex items-center gap-3 mt-2 mb-4">
+                  {product.stock_quantity === 0 ? (
+                    <span className="bg-red-500/20 text-red-300 border border-red-400/40 px-3 py-1 text-xs tracking-widest font-accent uppercase">
+                      Out of Stock
+                    </span>
+                  ) : product.stock_quantity <= 5 ? (
+                    <span className="bg-brand-gold/10 text-brand-gold border border-brand-gold/30 px-3 py-1 text-xs tracking-widest font-accent uppercase">
+                      Only {product.stock_quantity} left
+                    </span>
+                  ) : (
+                    <span className="text-brand-cream/40 font-body text-xs">
+                      In stock ({product.stock_quantity} available)
+                    </span>
+                  )}
+                </div>
+
+                {product.stock_quantity > 0 && product.stock_quantity <= 3 && (
+                  <p className="font-body text-brand-cream/50 text-xs italic mb-4">
+                    Only {product.stock_quantity} piece{product.stock_quantity > 1 ? 's' : ''} remain in this batch.
+                    Once sold, this design will be reworked for the next collection.
+                  </p>
+                )}
 
                 {product.description && (
                   <p className="mt-5 text-brand-cream/80 leading-relaxed">{product.description}</p>
@@ -211,7 +230,7 @@ const ProductDetailPage: React.FC = () => {
             </div>
           ) : null}
 
-          {!loading && !error && relatedProducts.length > 0 && (
+          {!loading && !fetchError && relatedProducts.length > 0 && (
             <section className="mt-14">
               <h2 className="font-accent text-brand-gold tracking-widest uppercase text-sm mb-4">
                 You May Also Like
