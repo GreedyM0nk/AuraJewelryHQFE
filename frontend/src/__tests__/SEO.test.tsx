@@ -22,9 +22,7 @@ describe('SEO Component', () => {
       <SEO
         title="Complete Test"
         description="Complete description"
-        canonical="https://example.com"
-        ogImage="https://example.com/og.jpg"
-        ogType="website"
+        image="https://example.com/og.jpg"
         noIndex={true}
       />
     )
@@ -66,24 +64,23 @@ describe('SEO Component', () => {
     expect(container).toBeTruthy()
   })
 
-  it('should handle canonical URL', () => {
+  it('should handle custom image', () => {
     const { container } = renderSEO(
       <SEO
         title="Test"
         description="Test"
-        canonical="https://example.com/test"
+        image="https://example.com/test.jpg"
       />
     )
     expect(container).toBeTruthy()
   })
 
-  it('should handle OG tags', () => {
+  it('should handle OG image', () => {
     const { container } = renderSEO(
       <SEO
         title="Test"
         description="Test"
-        ogImage="https://example.com/image.jpg"
-        ogType="product"
+        image="https://example.com/image.jpg"
       />
     )
     expect(container).toBeTruthy()
@@ -119,7 +116,7 @@ describe('SEO Component', () => {
       <SEO
         title="Beautiful Ring"
         description="Handcrafted ring"
-        ogImage="https://example.com/ring.jpg"
+        image="https://example.com/ring.jpg"
       />
     )
     expect(container).toBeTruthy()

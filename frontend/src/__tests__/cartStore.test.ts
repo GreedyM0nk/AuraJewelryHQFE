@@ -12,7 +12,6 @@ const mockProduct: Product = {
   category_id: '11111111-1111-1111-1111-111111111001',
   stock_quantity: 5,
   created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString(),
   sku: 'TEST-RING-001',
 }
 
@@ -96,7 +95,7 @@ describe('useCartStore - Cart Atomicity', () => {
   })
 
   it('should respect Infinity when stock_quantity is not provided', () => {
-    const productWithoutStock = { ...mockProduct, stock_quantity: undefined }
+    const productWithoutStock = { ...mockProduct, stock_quantity: undefined } as unknown as Product
 
     const { result } = renderHook(() => useCartStore())
 
@@ -146,8 +145,6 @@ describe('useCartStore - Cart Atomicity', () => {
 
   it('should open cart when adding item', () => {
     const { result } = renderHook(() => useCartStore())
-
-    const initialState = result.current.isOpen
 
     act(() => {
       result.current.addItem(mockProduct, 1)
