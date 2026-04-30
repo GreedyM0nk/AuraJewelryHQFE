@@ -77,7 +77,7 @@ export const AboutSection: React.FC = () => {
           <div className="row-span-2 overflow-hidden border border-brand-gold/20 relative">
             <img
               src={PLACEHOLDER_IMAGES[0]}
-              alt="Aura Jewellery craftsmanship 1"
+              alt="Master artisan hand-finishing a gold bracelet under warm studio light"
               loading="lazy"
               className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
             />
@@ -87,7 +87,7 @@ export const AboutSection: React.FC = () => {
           <div className="overflow-hidden border border-brand-gold/20">
             <img
               src={PLACEHOLDER_IMAGES[1]}
-              alt="Aura Jewellery craftsmanship 2"
+              alt="Close-up of a gemstone-set ring showing detailed filigree work"
               loading="lazy"
               className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
             />
@@ -97,7 +97,7 @@ export const AboutSection: React.FC = () => {
             <div className="overflow-hidden border border-brand-gold/20 relative">
               <img
                 src={PLACEHOLDER_IMAGES[2]}
-                alt="Aura Jewellery craftsmanship 3"
+                alt="Traditional meenakari enamel pattern being applied on jewellery"
                 loading="lazy"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
               />
@@ -105,7 +105,7 @@ export const AboutSection: React.FC = () => {
             <div className="overflow-hidden border border-brand-gold/20 relative">
               <img
                 src={PLACEHOLDER_IMAGES[3]}
-                alt="Aura Jewellery craftsmanship 4"
+                alt="Curated display of handcrafted necklaces in Aura Jewellery atelier"
                 loading="lazy"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
               />

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
-import { Helmet } from 'react-helmet-async'
 import { CheckCircle2 } from 'lucide-react'
+import { SEO } from '@/components/SEO'
 import { PageWrapper } from '@/components/layout/PageWrapper'
 import { Button } from '@/components/ui/Button'
 import { GoldDivider } from '@/components/ui/GoldDivider'
@@ -32,6 +32,8 @@ type OrderConfirmationState = {
 
 const formatPrice = (value: number) =>
   new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(value)
+
+const displayLineTotal = (quantity: number, unitPrice: number) => quantity * unitPrice
 
 const OrderConfirmationPage: React.FC = () => {
   const { orderId } = useParams<{ orderId: string }>()
@@ -79,14 +81,9 @@ const OrderConfirmationPage: React.FC = () => {
     typeof state?.totalAmount === 'number' ? state.totalAmount : resolvedOrder?.total_amount
   const displayName = state?.customerName?.trim() || null
 
-  const displayLineTotal = (quantity: number, unitPrice: number) => quantity * unitPrice
-
   return (
     <PageWrapper>
-      <Helmet>
-        <title>Order Confirmed | Aura Jewellery HQ</title>
-        <meta name="robots" content="noindex, nofollow" />
-      </Helmet>
+      <SEO title="Order Confirmed" description="Your order has been placed." noIndex />
       <main className="pt-28 pb-16 min-h-screen px-4">
         <section className="max-w-3xl mx-auto border border-brand-gold/20 bg-brand-black/50 p-6">
           <div className="flex justify-center mb-3">

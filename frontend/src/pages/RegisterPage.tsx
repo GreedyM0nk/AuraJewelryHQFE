@@ -99,7 +99,7 @@ const RegisterPage: React.FC = () => {
   return (
     <PageWrapper>
       <SEO
-        title="Create Account | Aura Jewellery HQ"
+        title="Create Account"
         description="Join the Aura Jewellery community. Create your account to track orders and save your favourites."
       />
 

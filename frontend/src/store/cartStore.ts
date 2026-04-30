@@ -24,22 +24,25 @@ export const useCartStore = create<CartState>()(
 
       addItem: (product, quantity = 1) =>
         set((state) => {
-          const safeQty = Math.max(1, Math.floor(quantity))
+          const safeQty = Math.max(1, Math.floor(Number(quantity)))
           const maxQty = product.stock_quantity ?? Infinity
           const existing = state.items.find((i) => i.product.id === product.id)
           if (existing) {
+            const newQty = Math.min(existing.quantity + safeQty, maxQty)
             return {
               items: state.items.map((i) =>
                 i.product.id === product.id
-                  ? { ...i, quantity: Math.min(i.quantity + safeQty, maxQty) }
+                  ? { ...i, quantity: newQty }
                   : i
               ),
+              isOpen: true,
               lastAddedAt: Date.now(),
               lastAddedProductName: product.name,
             }
           }
           return {
             items: [...state.items, { product, quantity: Math.min(safeQty, maxQty) }],
+            isOpen: true,
             lastAddedAt: Date.now(),
             lastAddedProductName: product.name,
           }

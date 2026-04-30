@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { SEO } from '@/components/SEO'
 import { PageWrapper } from '@/components/layout/PageWrapper'
 import { Button } from '@/components/ui/Button'
 import { GoldDivider } from '@/components/ui/GoldDivider'
@@ -198,6 +199,7 @@ const CheckoutPage: React.FC = () => {
 
   return (
     <PageWrapper>
+      <SEO title="Checkout" description="Complete your Aura Jewellery order securely." />
       <main className="pt-24 sm:pt-28 pb-16 min-h-screen px-4">
         <section className="max-w-4xl mx-auto">
           <p className="font-accent text-brand-gold/70 text-xs tracking-[0.35em] uppercase text-center mb-3">
