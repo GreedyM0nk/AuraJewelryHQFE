@@ -106,7 +106,7 @@ export const Navbar: React.FC = () => {
 
               <Link
                 to="/wishlist"
-                aria-label={`Wishlist, ${wishlistCount} items`}
+                aria-label={`Wishlist, ${wishlistCount} ${wishlistCount === 1 ? 'item' : 'items'}`}
                 className="relative text-brand-cream/70 hover:text-brand-gold transition-colors duration-200 min-h-[48px] min-w-[48px] flex items-center justify-center"
               >
                 <Heart size={20} />

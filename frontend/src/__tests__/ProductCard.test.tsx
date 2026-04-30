@@ -14,12 +14,12 @@ vi.mock('@/hooks/useCart', () => ({
 }))
 
 const product: Product = {
-  id: 'prod-1',
+  id: '22222222-2222-2222-2222-222222220001',
   name: 'Test Ring',
   description: 'A handcrafted ring',
   price: 2500,
-  category_id: 'cat-1',
-  category: { id: 'cat-1', name: 'Rings', description: null, image_url: null },
+  category_id: '11111111-1111-1111-1111-111111111004',
+  category: { id: '11111111-1111-1111-1111-111111111004', name: 'Rings', description: null, image_url: null },
   image_url: null,
   stock_quantity: 10,
   sku: 'RING-001',
@@ -40,7 +40,7 @@ describe('ProductCard wishlist target size', () => {
       </MemoryRouter>
     )
 
-    const wishlist = screen.getByRole('button', { name: /wishlist test ring/i })
+    const wishlist = screen.getByRole('button', { name: /add test ring to wishlist/i })
     expect(wishlist.className).toContain('min-w-[44px]')
     expect(wishlist.className).toContain('min-h-[44px]')
 

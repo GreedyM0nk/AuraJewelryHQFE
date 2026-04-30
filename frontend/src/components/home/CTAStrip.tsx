@@ -49,6 +49,9 @@ export const CTAStrip: React.FC = () => {
           ) : (
             <form className="flex flex-col items-center" onSubmit={handleSubscribe}>
               <div className="flex gap-3 flex-wrap justify-center">
+                <label htmlFor="newsletter-email" className="sr-only">
+                  Email address for newsletter
+                </label>
                 <input
                   type="email"
                   id="newsletter-email"

@@ -46,7 +46,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <PageWrapper>
-      <SEO title="Sign In | Aura Jewellery HQ" description="Sign in to your Aura Jewellery account." />
+      <SEO title="Sign In" description="Sign in to your Aura Jewellery account." />
 
       <main className="min-h-screen pt-28 pb-16 px-4 flex flex-col items-center">
         <div className="w-full max-w-md">

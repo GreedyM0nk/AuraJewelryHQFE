@@ -109,18 +109,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           )}
         </div>
       </div>
-
-      {/* Visible add-to-cart button (non-hover, accessible) */}
-      <div className="px-4 pb-4 group-hover:opacity-0 transition-opacity duration-200">
-        <button
-          className="w-full border border-brand-gold/30 text-brand-gold/70 font-accent text-xs tracking-widest uppercase py-2 hover:bg-brand-gold hover:text-brand-black transition-all duration-200"
-          onClick={handleAddToCart}
-          disabled={product.stock_quantity === 0}
-          aria-label={`Add ${product.name} to cart`}
-        >
-          {product.stock_quantity === 0 ? 'Sold Out' : 'Add to Cart'}
-        </button>
-      </div>
     </article>
   )
 }

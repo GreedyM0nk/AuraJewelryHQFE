@@ -64,16 +64,18 @@ export const CountrySelect: React.FC<CountrySelectProps> = ({
           error ? 'border-red-400/60' : 'border-brand-cream/20 focus:border-brand-gold'
         } text-left transition-colors duration-200 font-body text-sm`}
       >
-        <span className={selected ? 'text-brand-cream' : 'text-brand-cream/30'}>
-          {selected ? `${selected.flag} ${selected.name}` : 'Select your country...'}
+        <span className={selected ? 'text-brand-cream' : error ? 'text-red-400/70' : 'text-brand-cream/30'}>
+          {selected
+            ? `${selected.flag} ${selected.name}`
+            : error
+            ? error
+            : 'Select your country...'}
         </span>
         <ChevronDown
           size={14}
           className={`text-brand-cream/40 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
         />
       </button>
-
-      {error && <p className="text-red-400 text-xs font-body mt-1">{error}</p>}
 
       {open && (
         <div className="absolute z-50 w-full mt-1 bg-brand-charcoal border border-brand-gold/20 shadow-xl max-h-64 flex flex-col">

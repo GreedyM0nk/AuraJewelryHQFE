@@ -58,7 +58,7 @@ export const Footer: React.FC = () => {
             <div className="flex items-center gap-4">
               <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-brand-cream/50 hover:text-brand-gold transition-colors duration-200"><Instagram size={18} /></a>
               <a href="https://pinterest.com" target="_blank" rel="noopener noreferrer" aria-label="Pinterest" className="text-brand-cream/50 hover:text-brand-gold transition-colors duration-200"><PinterestIcon /></a>
-              <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-brand-cream/50 hover:text-brand-gold transition-colors duration-200"><MessageCircle size={18} /></a>
+              <a href="https://wa.me/919000000000" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-brand-cream/50 hover:text-brand-gold transition-colors duration-200"><MessageCircle size={18} /></a>
             </div>
           </div>
 

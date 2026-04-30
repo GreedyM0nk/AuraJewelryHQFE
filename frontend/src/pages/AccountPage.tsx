@@ -78,7 +78,7 @@ const AccountPage: React.FC = () => {
 
   return (
     <PageWrapper>
-      <SEO title="My Account" description="Manage your Aura Jewellery account and order history." />
+      <SEO title="My Account" description="Manage your Aura Jewellery account and order history." noIndex />
 
       <main className="min-h-screen pt-28 pb-16 px-4 max-w-4xl mx-auto">
         {justRegistered && (

@@ -16,6 +16,8 @@ import type { Product } from '@/types'
 const formatPrice = (value: number) =>
   new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(value)
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 const ProductDetailPage: React.FC = () => {
   const navigate = useNavigate()
   const { productId } = useParams<{ productId: string }>()
@@ -31,6 +33,16 @@ const ProductDetailPage: React.FC = () => {
     if (!productId) {
       setLoading(false)
       setFetchError(true)
+      setProduct(null)
+      setRelatedProducts([])
+      return
+    }
+
+    if (!UUID_REGEX.test(productId)) {
+      setFetchError(true)
+      setLoading(false)
+      setProduct(null)
+      setRelatedProducts([])
       return
     }
 
@@ -88,26 +100,24 @@ const ProductDetailPage: React.FC = () => {
           </button>
 
           <nav aria-label="Breadcrumb" className="mb-6">
-            <ol className="flex items-center gap-2 font-body text-xs text-brand-cream/40">
-              <li><Link to="/" className="hover:text-brand-gold transition-colors">Home</Link></li>
-              <li className="text-brand-gold/30">/</li>
-              <li><Link to="/shop" className="hover:text-brand-gold transition-colors">Shop</Link></li>
+            <div className="flex items-center gap-2 font-body text-xs text-brand-cream/40">
+              <Link to="/" className="hover:text-brand-gold transition-colors">Home</Link>
+              <span className="text-brand-gold/30" aria-hidden="true">/</span>
+              <Link to="/shop" className="hover:text-brand-gold transition-colors">Shop</Link>
               {product?.category?.name && (
                 <>
-                  <li className="text-brand-gold/30">/</li>
-                  <li>
-                    <Link
-                      to={product.category_id ? `/shop?category=${product.category_id}` : '/shop'}
-                      className="hover:text-brand-gold transition-colors"
-                    >
-                      {product.category.name}
-                    </Link>
-                  </li>
+                  <span className="text-brand-gold/30" aria-hidden="true">/</span>
+                  <Link
+                    to={product.category_id ? `/shop?category=${product.category_id}` : '/shop'}
+                    className="hover:text-brand-gold transition-colors"
+                  >
+                    {product.category.name}
+                  </Link>
                 </>
               )}
-              <li className="text-brand-gold/30">/</li>
-              <li className="text-brand-cream/70 truncate max-w-[120px]">{product?.name}</li>
-            </ol>
+              <span className="text-brand-gold/30" aria-hidden="true">/</span>
+              <span className="text-brand-cream/70 truncate max-w-[120px]" aria-current="page">{product?.name}</span>
+            </div>
           </nav>
 
           {product && (

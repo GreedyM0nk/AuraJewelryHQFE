@@ -5,18 +5,22 @@ interface SEOProps {
   title: string
   description: string
   image?: string
+  noIndex?: boolean
 }
 
 export const SEO: React.FC<SEOProps> = ({
   title,
   description,
   image = '/og-image.jpg',
+  noIndex = false,
 }) => {
-  const fullTitle = `${title} | Aura Jewellery HQ`
+  const suffix = ' | Aura Jewellery HQ'
+  const fullTitle = title.endsWith('Aura Jewellery HQ') ? title : `${title}${suffix}`
 
   return (
     <Helmet>
       <title>{fullTitle}</title>
+      {noIndex && <meta name="robots" content="noindex, nofollow" />}
       <meta name="description" content={description} />
       <link rel="canonical" href={typeof window !== 'undefined' ? window.location.href : ''} />
 
