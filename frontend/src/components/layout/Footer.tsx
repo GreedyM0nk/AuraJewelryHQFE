@@ -18,6 +18,8 @@ const COMPANY_LINKS = [
   { label: 'Sustainability', to: '/about#sustainability' },
   { label: 'Careers', to: '/about#careers' },
   { label: 'Press', to: '/about#press' },
+  { label: 'Create Account', to: '/register' },
+  { label: 'Sign In', to: '/login' },
 ]
 
 const TRANSPARENCY_LINKS = [

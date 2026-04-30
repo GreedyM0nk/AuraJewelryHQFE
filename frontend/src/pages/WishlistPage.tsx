@@ -52,13 +52,13 @@ const WishlistPage: React.FC = () => {
                   <ProductCard product={product} />
                   <button
                     onClick={() => {
-                      addItem(product)
+                      addItem(product, 1)
                       toggleItem(product)
                       toggleCart?.()
                     }}
-                    className="w-full font-accent text-xs tracking-widest uppercase py-2 border border-brand-gold/30 text-brand-gold/70 hover:bg-brand-gold hover:text-brand-black transition-all duration-200"
+                    className="w-full font-accent text-xs tracking-widest uppercase py-2.5 border-t border-brand-gold/20 text-brand-gold/70 hover:bg-brand-gold hover:text-brand-black transition-all duration-200"
                   >
-                    Move to Cart
+                    Move to Cart {'->'}
                   </button>
                 </div>
               ))}

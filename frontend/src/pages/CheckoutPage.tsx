@@ -7,6 +7,8 @@ import { Spinner } from '@/components/ui/Spinner'
 import { useCart } from '@/hooks/useCart'
 import { registerCustomer } from '@/api/customers'
 import { createOrder } from '@/api/orders'
+import { CountrySelect } from '@/components/ui/CountrySelect'
+import { useCustomerStore } from '@/store/customerStore'
 import type { CustomerCreate } from '@/types'
 
 const formatPrice = (value: number) =>
@@ -15,17 +17,23 @@ const formatPrice = (value: number) =>
 const CheckoutPage: React.FC = () => {
   const navigate = useNavigate()
   const { items, subtotal, clearCart } = useCart()
-  const [step, setStep] = useState<1 | 2>(1)
-  const [customerId, setCustomerId] = useState('')
+  const customer = useCustomerStore((s) => s.customer)
+  const [step, setStep] = useState<1 | 2>(customer ? 2 : 1)
+  const [customerId, setCustomerId] = useState(customer?.id ?? '')
   const [inlineError, setInlineError] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [submitting, setSubmitting] = useState(false)
   const [customerForm, setCustomerForm] = useState<CustomerCreate>({
-    name: '',
-    email: '',
-    phone: '',
-    country: 'India',
+    name: customer?.name ?? '',
+    email: customer?.email ?? '',
+    phone: customer?.phone ?? '',
+    country: customer?.country ?? 'India',
   })
+
+  const clearFieldError = (field: string) => {
+    setErrors((prev) => ({ ...prev, [field]: '' }))
+    setInlineError('')
+  }
 
   const cartSummary = useMemo(
     () =>
@@ -153,7 +161,7 @@ const CheckoutPage: React.FC = () => {
         state: {
           orderId: order.id,
           totalAmount: subtotal,
-          customerName: customerForm.name,
+          customerName: customer?.name ?? customerForm.name,
           items: items.map((i) => ({
             name: i.product.name,
             quantity: i.quantity,
@@ -218,8 +226,7 @@ const CheckoutPage: React.FC = () => {
                     onChange={(event) =>
                       {
                         setCustomerForm((prev) => ({ ...prev, name: event.target.value }))
-                        setErrors((prev) => ({ ...prev, name: '' }))
-                        setInlineError('')
+                        clearFieldError('name')
                       }
                     }
                     onBlur={(event) =>
@@ -229,7 +236,6 @@ const CheckoutPage: React.FC = () => {
                       errors.name ? 'border-red-400/70' : 'border-brand-gold/30'
                     }`}
                     placeholder="Name*"
-                    aria-invalid={Boolean(errors.name)}
                   />
                   {errors.name && <p className="text-red-400 text-xs mt-1 font-body">{errors.name}</p>}
                   <input
@@ -241,8 +247,7 @@ const CheckoutPage: React.FC = () => {
                     onChange={(event) =>
                       {
                         setCustomerForm((prev) => ({ ...prev, email: event.target.value }))
-                        setErrors((prev) => ({ ...prev, email: '' }))
-                        setInlineError('')
+                        clearFieldError('email')
                       }
                     }
                     onBlur={(event) =>
@@ -252,7 +257,6 @@ const CheckoutPage: React.FC = () => {
                       errors.email ? 'border-red-400/70' : 'border-brand-gold/30'
                     }`}
                     placeholder="Email*"
-                    aria-invalid={Boolean(errors.email)}
                   />
                   {errors.email && <p className="text-red-400 text-xs mt-1 font-body">{errors.email}</p>}
                   <input
@@ -263,35 +267,24 @@ const CheckoutPage: React.FC = () => {
                     onChange={(event) =>
                       {
                         setCustomerForm((prev) => ({ ...prev, phone: event.target.value }))
-                        setInlineError('')
+                        clearFieldError('phone')
                       }
                     }
                     className="w-full bg-brand-black border border-brand-gold/30 p-2.5 min-h-[44px]"
                     placeholder="Phone (optional)"
                   />
-                  <input
-                    type="text"
-                    name="country"
-                    required
-                    autoComplete="country-name"
+
+                  <CountrySelect
                     value={customerForm.country}
-                    onChange={(event) =>
-                      {
-                        setCustomerForm((prev) => ({ ...prev, country: event.target.value }))
-                        setErrors((prev) => ({ ...prev, country: '' }))
-                        setInlineError('')
-                      }
-                    }
-                    onBlur={(event) =>
-                      setErrors((prev) => ({ ...prev, country: validateField('country', event.target.value) }))
-                    }
-                    className={`w-full bg-brand-black border p-2.5 min-h-[44px] ${
-                      errors.country ? 'border-red-400/70' : 'border-brand-gold/30'
-                    }`}
-                    placeholder="Country*"
-                    aria-invalid={Boolean(errors.country)}
+                    onChange={(country) => {
+                      setCustomerForm((prev) => ({ ...prev, country: country.name }))
+                      clearFieldError('country')
+                    }}
+                    error={errors.country}
+                    label="Country"
+                    required
                   />
-                  {errors.country && <p className="text-red-400 text-xs mt-1 font-body">{errors.country}</p>}
+
                   {inlineError && <p className="text-xs sm:text-sm text-red-400">{inlineError}</p>}
                   <Button type="submit" disabled={submitting} className="w-full">
                     {submitting ? 'Saving...' : 'Continue to Review'}
@@ -327,9 +320,11 @@ const CheckoutPage: React.FC = () => {
                   {inlineError && <p className="text-xs sm:text-sm text-red-400 mt-3">{inlineError}</p>}
 
                   <div className="mt-4 flex gap-2">
-                    <Button variant="ghost" onClick={() => setStep(1)} disabled={submitting}>
-                      Back
-                    </Button>
+                    {!customer && (
+                      <Button variant="ghost" onClick={() => setStep(1)} disabled={submitting}>
+                        Back
+                      </Button>
+                    )}
                     <Button onClick={placeOrder} disabled={submitting} className="disabled:opacity-60 disabled:cursor-not-allowed">
                       {submitting ? (
                         <span className="flex items-center gap-2">

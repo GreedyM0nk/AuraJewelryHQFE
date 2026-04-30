@@ -12,6 +12,10 @@ class CustomerCreate(BaseModel):
     signup_date: date | None = None
 
 
+class CustomerLookup(BaseModel):
+    email: EmailStr
+
+
 class CustomerOut(BaseModel):
     id: uuid.UUID
     name: str

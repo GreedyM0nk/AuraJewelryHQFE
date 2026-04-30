@@ -70,63 +70,70 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
   }
 
   return (
-    <div className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm" onClick={onClose} role="presentation">
+    <>
+      <div
+        className="fixed inset-0 bg-brand-black/70 backdrop-blur-sm z-[55]"
+        onClick={onClose}
+        aria-hidden="true"
+      />
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Search products"
-        className="max-w-2xl mx-auto mt-24 border border-brand-gold/20 bg-brand-black p-4"
+        className="fixed inset-x-0 top-0 z-[56] bg-brand-charcoal border-b border-brand-gold/20 px-4 pt-24 pb-6 max-h-[70vh] overflow-y-auto"
         onClick={(event) => event.stopPropagation()}
       >
-        <input
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search products..."
-          className="w-full bg-brand-charcoal border border-brand-gold/30 px-3 py-2"
-          autoFocus
-        />
+        <div className="max-w-2xl mx-auto border border-brand-gold/20 bg-brand-black p-4">
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search products..."
+            className="w-full bg-brand-charcoal border border-brand-gold/30 px-3 py-2"
+            autoFocus
+          />
 
-        {loading && <p className="text-brand-cream/60 text-sm mt-3">Searching...</p>}
+          {loading && <p className="text-brand-cream/60 text-sm mt-3">Searching...</p>}
 
-        {!loading && query.trim() && (
-          <div className="mt-3 border border-brand-gold/15 divide-y divide-brand-gold/10">
-            {results.length === 0 ? (
-              <p className="px-3 py-3 text-brand-cream/60 text-sm">No products found.</p>
-            ) : (
-              results.map((product) => (
-                <Link
-                  key={product.id}
-                  to={`/products/${product.id}`}
-                  onClick={onClose}
-                  className="flex items-center gap-3 px-3 py-2 hover:bg-brand-gold/10 transition-colors"
-                >
-                  <div className="w-10 h-10 bg-brand-charcoal overflow-hidden shrink-0">
-                    {product.image_url ? (
-                      <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
-                    ) : null}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm truncate">{product.name}</p>
-                    <p className="text-xs text-brand-gold">{formatPrice(product.price)}</p>
-                  </div>
-                </Link>
-              ))
-            )}
-          </div>
-        )}
+          {!loading && query.trim() && (
+            <div className="mt-3 border border-brand-gold/15 divide-y divide-brand-gold/10">
+              {results.length === 0 ? (
+                <p className="px-3 py-3 text-brand-cream/60 text-sm">No products found.</p>
+              ) : (
+                results.map((product) => (
+                  <Link
+                    key={product.id}
+                    to={`/products/${product.id}`}
+                    onClick={onClose}
+                    className="flex items-center gap-3 px-3 py-2 hover:bg-brand-gold/10 transition-colors"
+                  >
+                    <div className="w-10 h-10 bg-brand-charcoal overflow-hidden shrink-0">
+                      {product.image_url ? (
+                        <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+                      ) : null}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm truncate">{product.name}</p>
+                      <p className="text-xs text-brand-gold">{formatPrice(product.price)}</p>
+                    </div>
+                  </Link>
+                ))
+              )}
+            </div>
+          )}
 
-        {!!query.trim() && (
-          <div className="mt-3">
-            <Link
-              to={`/shop?search=${encodeURIComponent(query.trim())}`}
-              onClick={onClose}
-              className="font-accent text-brand-gold text-xs tracking-widest uppercase hover:underline mt-4 block text-center"
-            >
-              View all results ({results.length}+) {'->'}
-            </Link>
-          </div>
-        )}
+          {!!query.trim() && (
+            <div className="mt-3">
+              <Link
+                to={`/shop?search=${encodeURIComponent(query.trim())}`}
+                onClick={onClose}
+                className="font-accent text-brand-gold text-xs tracking-widest uppercase hover:underline mt-4 block text-center"
+              >
+                View all results ({results.length}+) {'->'}
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   )
 }
